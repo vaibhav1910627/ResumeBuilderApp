@@ -73,7 +73,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
         composable(Routes.PERSONAL) {
             PersonalScreen(
                 uiState = resumeViewModel.uiState,
-                onNext = {navController.navigate(Routes.SKILLS)},
+                onNext = {navController.navigate(Routes.CAREER)},
                 onPhotoPicked = resumeViewModel::setPhotoUri,
                 onFieldChange = resumeViewModel::updatePersonal
             )

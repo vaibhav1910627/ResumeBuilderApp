@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,7 +26,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.data.UiState
 
@@ -42,7 +48,7 @@ fun AchievementScreen(
 
 
     ) {
-
+    val focusManager = LocalFocusManager.current
     val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
@@ -109,6 +115,12 @@ fun AchievementScreen(
                             value = ach.achievements, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null) },
                             label = { Text("Achievements") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Next)
+                                }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -117,6 +129,13 @@ fun AchievementScreen(
                             value = ach.description, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it) },
                             label = { Text("Description") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(
+                                onDone = {focusManager.clearFocus()
+                                if(ach.achievements.isNotBlank()){
+                                    onNext()
+                                }}
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )

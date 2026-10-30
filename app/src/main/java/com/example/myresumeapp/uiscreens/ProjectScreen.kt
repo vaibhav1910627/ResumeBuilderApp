@@ -1,5 +1,6 @@
 package com.example.myresumeapp.uiscreens
 
+import android.inputmethodservice.Keyboard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,7 +29,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.UiState
@@ -51,6 +57,7 @@ fun ProjectScreen(
 
 
     ) {
+    val focusManager = LocalFocusManager.current
 
     val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
@@ -118,6 +125,10 @@ fun ProjectScreen(
                             value = pro.projectName, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null, null) },
                             label = { Text("Project Name") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next)}
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -126,6 +137,11 @@ fun ProjectScreen(
                             value = pro.technology, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it, null) },
                             label = { Text("Technology") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Next)
+                            }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )
@@ -145,6 +161,15 @@ fun ProjectScreen(
                                     )
                                 },
                                 label = { Text("Description") },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                keyboardActions = KeyboardActions(
+                                    onDone  = {
+                                        focusManager.clearFocus()
+                                        if(pro.projectName.isNotBlank()) {
+                                            onNext()
+                                        }
+                                    }
+                                ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )

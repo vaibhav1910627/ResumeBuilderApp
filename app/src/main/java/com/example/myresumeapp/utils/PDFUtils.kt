@@ -65,35 +65,45 @@ fun drawResumeContent(
     val pageWidth = PAGE_WIDTH
     val centerX = (pageWidth / 2).toFloat()
 
-    // Paint for Name (Biggest)
+    val primaryColor = Color.rgb(26, 26, 26)
+
+    val headerColor = Color.rgb(43, 58, 85)
+
+    val dividerColor = Color.rgb(136, 136, 136)
+
     val namePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 30f
+        textSize = 28f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textAlign = Paint.Align.CENTER
-        color = Color.BLACK
+        color = primaryColor
     }
 
     // Paint for Personal Details (Centered)
     val centeredDetailPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 12f
+        textSize = 11f
         textAlign = Paint.Align.CENTER
-        color = Color.DKGRAY
+        color = primaryColor
     }
 
     val headerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 14f
+        textSize = 13f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        color = Color.BLACK
+        color = headerColor
     }
 
-    val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 12f }
-    val textPaint2 = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 12f }
-    val datePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textSize = 11f
+        color = primaryColor
+    }
+//    val textPaint2 = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 12f }
+    val datePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textSize = 10.5f
         textAlign = Paint.Align.RIGHT
 //        color = Color.GRAY
+        color = primaryColor
     }
-    val divider = Paint().apply { color = Color.LTGRAY; strokeWidth = 1.5f }
+    val divider = Paint().apply { color = dividerColor
+        strokeWidth = 1f }
 
     var y = 50f
 
@@ -298,7 +308,7 @@ fun drawResumeContent(
     resume.skills.forEach { sk ->
         if (sk.skill.isNotBlank()) {
             canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
-            canvas.drawText(" ${sk.skill}", 120f, y, textPaint2)
+            canvas.drawText(" ${sk.skill}", 120f, y, textPaint)
             y+=10f
 //            canvas.drawText("• Soft Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
 
@@ -315,7 +325,7 @@ fun drawResumeContent(
 //            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
 //            y+=10f
             canvas.drawText("• Soft Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
-            canvas.drawText("${sk.skill2}", /*startX + (currentColumn * columnWidth)*/ 120f, y, textPaint2)
+            canvas.drawText("${sk.skill2}", /*startX + (currentColumn * columnWidth)*/ 120f, y, textPaint)
             y+=10f
 //            currentColumn++
 //            if (currentColumn >= 3) {
@@ -330,7 +340,7 @@ fun drawResumeContent(
 //            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
 //            y+=10f
             canvas.drawText("• Language:  ", startX + (currentColumn * columnWidth), y, headerPaint)
-            canvas.drawText("${sk.skill3}", /*startX + (currentColumn * columnWidth)*/ 120f, y, textPaint2)
+            canvas.drawText("${sk.skill3}", /*startX + (currentColumn * columnWidth)*/ 120f, y, textPaint)
 
             currentColumn++
             if (currentColumn >= 3) {

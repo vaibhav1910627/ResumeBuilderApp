@@ -556,7 +556,8 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
     fun updateCertificate(
         index: Int,
         association: String?,
-        monthYear: String?,
+        startMonthYear: String?,
+        endMonthYear: String?,
         topic: String?
     ) {
 
@@ -566,7 +567,8 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
 
         currentCertificate[index] = certificateToUpdate.copy(
             association = association ?: certificateToUpdate.association,
-            monthYear = monthYear ?: certificateToUpdate.monthYear,
+            startMonthYear = startMonthYear ?: certificateToUpdate.startMonthYear,
+            endMonthYear = endMonthYear ?: certificateToUpdate.endMonthYear,
             topic = topic ?: certificateToUpdate.topic
         )
 

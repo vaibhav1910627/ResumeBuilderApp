@@ -79,7 +79,8 @@ data class School10Education(
 
 data class Certificates(
     val association: String = "",
-    val monthYear: String= "",
+    val startMonthYear: String= "",
+    val endMonthYear: String = "",
     val topic: String = ""
 )
 data class School12Education(
