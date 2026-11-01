@@ -46,9 +46,9 @@ fun generateResumePDFToURI(
     val pageInfo =
         android.graphics.pdf.PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
     val page = pdf.startPage(pageInfo)
-    
+
     drawResumeContent(page.canvas, resume, photo)
-    
+
     pdf.finishPage(page)
 
     context.contentResolver.openOutputStream(outputURI)?.use { out ->
@@ -102,8 +102,10 @@ fun drawResumeContent(
 //        color = Color.GRAY
         color = primaryColor
     }
-    val divider = Paint().apply { color = dividerColor
-        strokeWidth = 1f }
+    val divider = Paint().apply {
+        color = dividerColor
+        strokeWidth = 1f
+    }
 
     var y = 50f
 
@@ -145,7 +147,7 @@ fun drawResumeContent(
     resume.career.let { car ->
         y = drawMultiLine(canvas, car.careerDescription, 40f, y, pageWidth - 80, textPaint)
     }
-    
+
 //    y += 5f
     canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
     y += 20f
@@ -224,15 +226,24 @@ fun drawResumeContent(
         canvas.drawText("EXPERIENCE", 40f, y, headerPaint)
         y += 20f
         resume.experience.forEach { exp ->
-            val boldText = Paint(textPaint).apply { typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD) }
-            val italicPaint = Paint(textPaint).apply { typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC); color = Color.DKGRAY }
+            val boldText = Paint(textPaint).apply {
+                typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            }
+            val italicPaint = Paint(textPaint).apply {
+                typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC); color = Color.DKGRAY
+            }
 
             canvas.drawText("• ${exp.company}", 40f, y, boldText)
 
             val companyWidthWithBullet = boldText.measureText("• ${exp.company}")
             canvas.drawText(" (${exp.role})", 40f + companyWidthWithBullet, y, italicPaint)
 
-            canvas.drawText("${exp.startMonthYear} - ${exp.endMonthYear}", (pageWidth - 40).toFloat(), y, datePaint)
+            canvas.drawText(
+                "${exp.startMonthYear} - ${exp.endMonthYear}",
+                (pageWidth - 40).toFloat(),
+                y,
+                datePaint
+            )
             y += 16f
             y = drawMultiLine(canvas, exp.responsibilities, 55f, y, pageWidth - 80, textPaint)
 //            y += 10f
@@ -249,7 +260,11 @@ fun drawResumeContent(
             val projTitlePaint = Paint(textPaint).apply { typeface = Typeface.DEFAULT_BOLD }
             canvas.drawText("• ${proj.projectName}", 40f, y, projTitlePaint)
             val projectsWidthWithBullet = projTitlePaint.measureText("• ${proj.projectName}")
-            canvas.drawText(" (${proj.technology})", 40f + projectsWidthWithBullet, y, Paint(textPaint).apply { textSize = 12f; color = Color.DKGRAY })
+            canvas.drawText(
+                " (${proj.technology})",
+                40f + projectsWidthWithBullet,
+                y,
+                Paint(textPaint).apply { textSize = 12f; color = Color.DKGRAY })
             y += 16f
             y = drawMultiLine(canvas, proj.description, 55f, y, pageWidth - 90, textPaint)
             y += 10f
@@ -266,9 +281,18 @@ fun drawResumeContent(
         resume.certificate.forEach { cert ->
             canvas.drawText("• ${cert.topic}", 40f, y, textPaint)
 //            canvas.drawText(cert.startMonthYear, (pageWidth - 40).toFloat(), y, datePaint)
-            canvas.drawText("${cert.startMonthYear} - ${cert.endMonthYear}", (pageWidth - 40).toFloat(), y, datePaint)
+            canvas.drawText(
+                "${cert.startMonthYear} - ${cert.endMonthYear}",
+                (pageWidth - 40).toFloat(),
+                y,
+                datePaint
+            )
             y += 16f
-            canvas.drawText(cert.association, 55f, y, Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
+            canvas.drawText(
+                cert.association,
+                55f,
+                y,
+                Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
             y += 18f
         }
 //        y += 5f
@@ -308,9 +332,14 @@ fun drawResumeContent(
 
     resume.skills.forEach { sk ->
         if (sk.skill.isNotBlank()) {
-            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
+            canvas.drawText(
+                "• Tech Skill: ",
+                startX + (currentColumn * columnWidth),
+                y,
+                headerPaint
+            )
             canvas.drawText(" ${sk.skill}", 120f, y, textPaint)
-            y+=10f
+            y += 10f
 //            canvas.drawText("• Soft Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
 
 //            currentColumn++
@@ -318,22 +347,32 @@ fun drawResumeContent(
 //                currentColumn = 0
 //                y += 18f
 //            }
-            y+=8f
+            y += 8f
         }
     }
     resume.skills2.forEach { sk ->
         if (sk.skill2.isNotBlank()) {
 //            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
 //            y+=10f
-            canvas.drawText("• Soft Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
-            canvas.drawText("${sk.skill2}", /*startX + (currentColumn * columnWidth)*/ 120f, y, textPaint)
-            y+=10f
+            canvas.drawText(
+                "• Soft Skill: ",
+                startX + (currentColumn * columnWidth),
+                y,
+                headerPaint
+            )
+            canvas.drawText(
+                "${sk.skill2}", /*startX + (currentColumn * columnWidth)*/
+                120f,
+                y,
+                textPaint
+            )
+            y += 10f
 //            currentColumn++
 //            if (currentColumn >= 3) {
 //                currentColumn = 0
 //                y += 18f
 //            }
-            y+=8f
+            y += 8f
         }
     }
     resume.skills3.forEach { sk ->
@@ -341,7 +380,12 @@ fun drawResumeContent(
 //            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
 //            y+=10f
             canvas.drawText("• Language:  ", startX + (currentColumn * columnWidth), y, headerPaint)
-            canvas.drawText("${sk.skill3}", /*startX + (currentColumn * columnWidth)*/ 120f, y, textPaint)
+            canvas.drawText(
+                "${sk.skill3}", /*startX + (currentColumn * columnWidth)*/
+                120f,
+                y,
+                textPaint
+            )
 
             currentColumn++
             if (currentColumn >= 3) {
@@ -360,20 +404,24 @@ fun drawResumeContent(
 
 
 // -------- ACHIEVEMENT SECTION ----------
-if (resume.achievements.any { it.achievements.isNotBlank() }) {
-    canvas.drawText("Co Curricular Activities", 40f, y, headerPaint)
-    y += 20f
-    resume.achievements.forEach { ach ->
-        canvas.drawText("• ${ach.achievements}", 40f, y, textPaint)
+    if (resume.achievements.any { it.achievements.isNotBlank() }) {
+        canvas.drawText("Co Curricular Activities", 40f, y, headerPaint)
+        y += 20f
+        resume.achievements.forEach { ach ->
+            canvas.drawText("• ${ach.achievements}", 40f, y, textPaint)
 //        canvas.drawText(ach.achievements, (pageWidth - 40).toFloat(), y, datePaint)
-        y += 16f
-        canvas.drawText(ach.description, 55f, y, Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
-        y += 18f
-    }
+            y += 16f
+            canvas.drawText(
+                ach.description,
+                55f,
+                y,
+                Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
+            y += 18f
+        }
 //        y += 5f
-    canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-    y += 20f
-}
+        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
+        y += 20f
+    }
 
 //
 //    if (resume.achievements.any { it.achievements.isNotBlank() }) {
@@ -451,12 +499,14 @@ fun ResumePDFPreview() {
         skills = listOf(Skills("")),
         skills2 = listOf(Skills2("")),
         skills3 = listOf(Skills3(" ")),
-        school10Education = School10Education(" ","","","", ""),
-        school12Education = School12Education("","","","", ""),
-achievements = listOf(Achievements("", ""),Achievements("", "")),
+        school10Education = School10Education(" ", "", "", "", ""),
+        school12Education = School12Education("", "", "", "", ""),
+        achievements = listOf(Achievements("", ""), Achievements("", "")),
         higherEducation = listOf(HigherEducation("", "", "", "", "")),
-        certificate = listOf(Certificates("", "",""), Certificates("", "",""),
-            Certificates("","", "")),
+        certificate = listOf(
+            Certificates("", "", ""), Certificates("", "", ""),
+            Certificates("", "", "")
+        ),
         language = listOf(Language(""), Language(""), Language("")),
         experience = listOf(Experience("", "", "", "", "")),
         projects = listOf(Project("", "", ""), Project("", "", ""))
@@ -476,11 +526,17 @@ achievements = listOf(Achievements("", ""),Achievements("", "")),
                 // Scale the canvas to fit the preview area
                 val scale = size.width / PAGE_WIDTH
                 canvas.nativeCanvas.scale(scale, scale)
-                
+
                 // Draw white background
                 val bgPaint = Paint().apply { color = Color.WHITE }
-                canvas.nativeCanvas.drawRect(0f, 0f, PAGE_WIDTH.toFloat(), PAGE_HEIGHT.toFloat(), bgPaint)
-                
+                canvas.nativeCanvas.drawRect(
+                    0f,
+                    0f,
+                    PAGE_WIDTH.toFloat(),
+                    PAGE_HEIGHT.toFloat(),
+                    bgPaint
+                )
+
                 drawResumeContent(canvas.nativeCanvas, sampleData, null)
             }
         }
