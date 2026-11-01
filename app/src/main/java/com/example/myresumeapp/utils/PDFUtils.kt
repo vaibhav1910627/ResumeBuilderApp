@@ -265,7 +265,8 @@ fun drawResumeContent(
         y += 20f
         resume.certificate.forEach { cert ->
             canvas.drawText("• ${cert.topic}", 40f, y, textPaint)
-            canvas.drawText(cert.monthYear, (pageWidth - 40).toFloat(), y, datePaint)
+//            canvas.drawText(cert.startMonthYear, (pageWidth - 40).toFloat(), y, datePaint)
+            canvas.drawText("${cert.startMonthYear} - ${cert.endMonthYear}", (pageWidth - 40).toFloat(), y, datePaint)
             y += 16f
             canvas.drawText(cert.association, 55f, y, Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
             y += 18f

@@ -43,11 +43,13 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.data.UiState
-
+import com.example.myresumeapp.ui.theme.MyResumeAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun CertificateScreen(
     uiState: UiState,
@@ -62,7 +64,7 @@ fun CertificateScreen(
         startMonthYear: String?,
         endMonthYear: String?,
         topic: String?
-            ) -> Unit,
+    ) -> Unit,
 
 
     ) {
@@ -200,13 +202,15 @@ fun CertificateScreen(
                                 label = { Text("Topic") },
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
-                                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                    onDone = { focusManager.clearFocus()
+                                    onAdd()
+                                    }
                                 ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
 
-                    }
+                        }
                     }
                 }
             }
@@ -241,5 +245,20 @@ fun CertificateScreen(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CertificateScreenPreview() {
+    MyResumeAppTheme {
+        CertificateScreen(
+            uiState = UiState(),
+            onPrev = {},
+            onNext = {},
+            onAdd = {},
+            onRemove = {},
+            onFieldChange = { _, _, _, _, _ -> }
+        )
     }
 }

@@ -40,10 +40,6 @@ import kotlin.text.filter
 import kotlin.text.isDigit
 
 
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectScreen(
@@ -127,7 +123,7 @@ fun ProjectScreen(
                             label = { Text("Project Name") },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
-                                onNext = { focusManager.moveFocus(FocusDirection.Next)}
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
@@ -163,9 +159,9 @@ fun ProjectScreen(
                                 label = { Text("Description") },
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(
-                                    onDone  = {
+                                    onDone = {
                                         focusManager.clearFocus()
-                                        if(pro.projectName.isNotBlank()) {
+                                        if (pro.projectName.isNotBlank()) {
                                             onNext()
                                         }
                                     }

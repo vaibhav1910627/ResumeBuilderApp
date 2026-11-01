@@ -131,10 +131,12 @@ fun AchievementScreen(
                             label = { Text("Description") },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
-                                onDone = {focusManager.clearFocus()
-                                if(ach.achievements.isNotBlank()){
-                                    onNext()
-                                }}
+                                onDone = {
+                                    focusManager.clearFocus()
+                                    if (ach.achievements.isNotBlank()) {
+                                        onNext()
+                                    }
+                                }
                             ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)

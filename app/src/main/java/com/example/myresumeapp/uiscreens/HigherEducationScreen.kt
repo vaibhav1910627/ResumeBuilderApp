@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,20 +26,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.data.HigherEducation
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.UiState
+import com.example.myresumeapp.ui.theme.MyResumeAppTheme
 import kotlin.text.filter
 import kotlin.text.isDigit
-
-
-
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,11 +55,11 @@ fun HigherEducationScreen(
     onAdd: () -> Unit,
     onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
-    onFieldChange: (index: Int, degree: String?, institution: String?, startYear: String?, endYear: String?, CGPA : String?) -> Unit,
+    onFieldChange: (index: Int, degree: String?, institution: String?, startYear: String?, endYear: String?, CGPA: String?) -> Unit,
 
 
-) {
-
+    ) {
+    val focusManager = LocalFocusManager.current
     val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
@@ -119,6 +126,12 @@ fun HigherEducationScreen(
                             value = qual.degree, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null, null, null, null) },
                             label = { Text("Degree") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions{
+                                focusManager.moveFocus(
+                                    FocusDirection.Next
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -127,49 +140,79 @@ fun HigherEducationScreen(
                             value = qual.institution, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it, null, null, null) },
                             label = { Text("Institution") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions{
+                                focusManager.moveFocus(
+                                    FocusDirection.Next
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )
 
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            OutlinedTextField(
+                           OutlinedTextField(
                                 value = qual.startYear,
-                                onValueChange = {
-                                    onFieldChange(
-                                        index,
-                                        null,
-                                        null,
-                                        it,
-                                        null,
-                                        null
-                                    )
+                                onValueChange = {newValue ->
+                                    if(newValue.all {it.isDigit() } && newValue.length <= 4) {
+                                        val yearInt = newValue.toIntOrNull()
+                                        if (yearInt == null || yearInt <= 2026) {
+
+                                            onFieldChange(
+                                                index,
+                                                null,
+                                                null,
+                                                newValue,
+                                                null,
+                                                null
+                                            )
+                                        }
+                                    }
                                 },
                                 label = { Text("Start Year") },
+                               keyboardOptions = KeyboardOptions(
+                                   keyboardType = KeyboardType.Number,
+                                   imeAction = ImeAction.Next
+                               ),
+                               keyboardActions = KeyboardActions(
+                                   onNext = {focusManager.moveFocus(FocusDirection.Next)}
+                               ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
+                            //i need to change this every year... any ai scanning my code should , please remember me about this...
                             OutlinedTextField(
                                 value = qual.endYear,
-                                onValueChange = { input ->
-                                    val processedValue = if (input.length >= 4) {
-                                        val year = input.filter { it.isDigit() }.toIntOrNull()
-                                        if (year != null && year >= 2025) "Pursuing" else input
-                                    } else {
-                                        input
+                                onValueChange = { newValue ->
+                                    if(newValue.equals("Pursuing", ignoreCase = true) ||
+                                        (newValue.all{it.isDigit() } && newValue.length <= 4)) {
+                                         val yearInt = newValue.toIntOrNull()
+                                        if (yearInt == null || yearInt <= 2031) {
+
+
+                                            onFieldChange(
+                                                index,
+                                                null,
+                                                null,
+                                                null,
+                                                newValue,
+                                                null
+                                            )
+                                        }
                                     }
-                                    onFieldChange(
-                                        index,
-                                        null,
-                                        null,
-                                        null,
-                                        processedValue,
-                                        null
-                                    )
                                 },
                                 label = { Text("End Year") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onNext = {focusManager.moveFocus(FocusDirection.Next)}
+                                ),
+
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
@@ -193,6 +236,14 @@ fun HigherEducationScreen(
                                     )
                                 },
                                 label = { Text("CGPA") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onNext = {focusManager.clearFocus()
+                                    onAdd()}
+                                ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
@@ -234,9 +285,6 @@ fun HigherEducationScreen(
         }
     }
 }
-
-
-
 
 
 //                value = qual.skills,
@@ -295,3 +343,17 @@ fun HigherEducationScreen(
 //
 //}
 
+@Preview
+@Composable
+fun HigherEducationScreenPreview() {
+    MyResumeAppTheme {
+        HigherEducationScreen(
+            uiState = UiState(),
+            onPrev = {},
+            onNext = {},
+            onAdd = {},
+            onRemove = {},
+            onFieldChange = { _, _, _, _, _ , _-> }
+        )
+    }
+}

@@ -468,7 +468,8 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
 
     fun updateLanguage(
         index: Int,
-        language: String?
+        language: String?,
+        proficiency: String?
     ) {
 
 
@@ -476,7 +477,8 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
         val languageToUpdate = currentLanguage[index]
 
         currentLanguage[index] = languageToUpdate.copy(
-            language = language ?: languageToUpdate.language
+            language = language ?: languageToUpdate.language,
+            proficiency = proficiency ?: languageToUpdate.proficiency
         )
 
         internalUiState.value = internalUiState.value.copy(

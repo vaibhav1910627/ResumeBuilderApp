@@ -36,7 +36,8 @@ data class HigherEducation(
 )
 
 data class Language(
-    val language: String = ""
+    val language: String = "",
+    val proficiency: String = ""
 )
 
 data class Skills(

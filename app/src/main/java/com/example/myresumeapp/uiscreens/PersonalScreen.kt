@@ -53,8 +53,6 @@ import com.example.myresumeapp.R
 import com.example.myresumeapp.data.UiState
 
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalScreen(
@@ -100,11 +98,11 @@ fun PersonalScreen(
             CenterAlignedTopAppBar(
                 title = { Text("My Resume", color = textColor) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                        navigationIcon = {
-                            Button(
+                navigationIcon = {
+                    Button(
                         onClick = {/*  */ },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                            ) {
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Open Navigation"
@@ -139,7 +137,7 @@ fun PersonalScreen(
                     label = { Text("Name") },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
-                        onNext = {focusManager.moveFocus(FocusDirection.Next)}
+                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
@@ -193,7 +191,12 @@ fun PersonalScreen(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    isError = uiState.resume.personal.githublink?.let { !isValidGitHubOrLinkedInUrl(it, "github") } ?: false,
+                    isError = uiState.resume.personal.githublink?.let {
+                        !isValidGitHubOrLinkedInUrl(
+                            it,
+                            "github"
+                        )
+                    } ?: false,
                     colors = textFieldColors
                 )
             }
@@ -212,7 +215,12 @@ fun PersonalScreen(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    isError = uiState.resume.personal.linkedinlink?.let { !isValidGitHubOrLinkedInUrl(it, "linkedin") } ?: false,
+                    isError = uiState.resume.personal.linkedinlink?.let {
+                        !isValidGitHubOrLinkedInUrl(
+                            it,
+                            "linkedin"
+                        )
+                    } ?: false,
                     colors = textFieldColors
                 )
             }
@@ -228,7 +236,7 @@ fun PersonalScreen(
                         onDone = {
                             focusManager.clearFocus()
 
-                            if(uiState.resume.personal.name.isNotBlank()){
+                            if (uiState.resume.personal.name.isNotBlank()) {
                                 onNext()
                             }
                         }
