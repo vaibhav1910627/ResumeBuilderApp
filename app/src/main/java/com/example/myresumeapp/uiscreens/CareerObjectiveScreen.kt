@@ -100,7 +100,7 @@ fun CareerObjectiveScreen(
                     ) {
 
                         Text(
-                            "Not more than 3 lines",
+                            "Not more than 50words ",
                             style = MaterialTheme.typography.titleMedium
                         )
                         Spacer(Modifier.weight(1f))
@@ -110,7 +110,7 @@ fun CareerObjectiveScreen(
                         OutlinedTextField(
                             value = car.careerDescription,// FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(it) },
-                            label = { Text("School Name") },
+                            label = { Text("What's your objective") },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
                                 onDone = {

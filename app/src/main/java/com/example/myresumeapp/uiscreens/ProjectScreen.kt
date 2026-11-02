@@ -121,7 +121,7 @@ fun ProjectScreen(
                             value = pro.projectName, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null, null) },
                             label = { Text("Project Name") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             ),

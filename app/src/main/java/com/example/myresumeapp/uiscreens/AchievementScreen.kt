@@ -154,7 +154,7 @@ fun AchievementScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                 ) {
-                    Text("+ Add Project", color = Color.White)
+                    Text("+ Add Achievement", color = Color.White)
                 }
             }
 

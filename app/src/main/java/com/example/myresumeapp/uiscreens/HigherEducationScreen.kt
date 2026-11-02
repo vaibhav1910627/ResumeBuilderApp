@@ -241,8 +241,9 @@ fun HigherEducationScreen(
                                     imeAction = ImeAction.Done
                                 ),
                                 keyboardActions = KeyboardActions(
-                                    onNext = {focusManager.clearFocus()
-                                    onAdd()}
+                                    onDone = {focusManager.clearFocus()
+                                    onAdd()
+                                    }
                                 ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)

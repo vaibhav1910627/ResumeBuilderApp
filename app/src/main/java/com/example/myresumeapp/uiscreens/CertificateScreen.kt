@@ -18,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -118,6 +119,9 @@ fun CertificateScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+
+                        var hasNoExpiry by remember { mutableStateOf(cert.endMonthYear.isBlank()) }
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 "Certificate #${index + 1}",
@@ -151,14 +155,34 @@ fun CertificateScreen(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()){
+
+
+                        Checkbox(
+                            checked = hasNoExpiry,
+                            onCheckedChange = { isChecked ->
+                                hasNoExpiry = isChecked
+                                if (!isChecked) {
+                                    onFieldChange(index, null, null, "", null)
+
+                                }
+                            })
+                        Text(
+                            "This certificate has no expiry date",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = textColor
+                        )
+                    }
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             // Start Date Field with Calendar
+
                             DateFieldWithPicker(
-                                label = "Start Date",
+                                label = "Completion\n Date",
                                 value = cert.startMonthYear,
                                 onValueChange = { onFieldChange(index, null, it, null, null) },
                                 textFieldColors = textFieldColors,
@@ -166,8 +190,9 @@ fun CertificateScreen(
                             )
 
                             // End Date Field with Calendar
+                            if(!hasNoExpiry) {
                             DateFieldWithPicker(
-                                label = "End Date",
+                                label = "Expiry Date",
                                 value = cert.endMonthYear,
                                 onValueChange = {
                                     onFieldChange(
@@ -182,12 +207,14 @@ fun CertificateScreen(
                                 modifier = Modifier.weight(1f)
                             )
                         }
+                        }
 
 
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
+
                             OutlinedTextField(
                                 value = cert.topic,
                                 onValueChange = {
@@ -221,7 +248,7 @@ fun CertificateScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                 ) {
-                    Text("+ Add Project", color = Color.White)
+                    Text("+ Add Certificate", color = Color.White)
                 }
             }
 
