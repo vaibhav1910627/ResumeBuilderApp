@@ -1,4 +1,4 @@
-package com.example.myresumeapp.uiscreens
+package com.example.myresumeapp.feature.editor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,60 +12,41 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myresumeapp.data.UiState
-import com.example.myresumeapp.ui.theme.MyResumeAppTheme
+//import androidx.wear.compose.foundation.weight
+import com.example.myresumeapp.data.model.UiState
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-fun CertificateScreen(
+fun ProjectScreen(
     uiState: UiState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
     onAdd: () -> Unit,
     onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
-    onFieldChange: (
-        index: Int,
-        association: String?,
-        startMonthYear: String?,
-        endMonthYear: String?,
-        topic: String?
-    ) -> Unit,
+    onFieldChange: (index: Int, projectName: String?, technology: String?, description: String?) -> Unit,
 
 
     ) {
@@ -106,11 +87,11 @@ fun CertificateScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text("Certificates", style = MaterialTheme.typography.headlineMedium)
+                Text("Projects", style = MaterialTheme.typography.headlineMedium)
             }
 
             // Loop through the list of qualifications
-            itemsIndexed(uiState.resume.certificate) { index, cert ->
+            itemsIndexed(uiState.resume.projects) { index, pro ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(4.dp)
@@ -119,17 +100,14 @@ fun CertificateScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-
-                        var hasNoExpiry by remember { mutableStateOf(cert.endMonthYear.isBlank()) }
-
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                "Certificate #${index + 1}",
+                                "Project #${index + 1}",
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(Modifier.weight(1f))
                             // Only show remove if there is more than one
-                            if (uiState.resume.certificate.size > 1) {
+                            if (uiState.resume.projects.size > 1) {
                                 TextButton(onClick = { onRemove(index) }) {
                                     Text("Remove", color = Color.Red)
                                 }
@@ -137,17 +115,9 @@ fun CertificateScreen(
                         }
 
                         OutlinedTextField(
-                            value = cert.association, // FIXED: Use 'qual' from the loop
-                            onValueChange = {
-                                onFieldChange(
-                                    index,
-                                    it,
-                                    null,
-                                    null,
-                                    null
-                                )
-                            },
-                            label = { Text("Association") },
+                            value = pro.projectName, // FIXED: Use 'qual' from the loop
+                            onValueChange = { onFieldChange(index, it, null, null) },
+                            label = { Text("Project Name") },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -155,92 +125,52 @@ fun CertificateScreen(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()){
 
-
-                        Checkbox(
-                            checked = hasNoExpiry,
-                            onCheckedChange = { isChecked ->
-                                hasNoExpiry = isChecked
-                                if (!isChecked) {
-                                    onFieldChange(index, null, null, "", null)
-
-                                }
-                            })
-                        Text(
-                            "This certificate has no expiry date",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = textColor
-                        )
-                    }
-
-                        Row(
+                        OutlinedTextField(
+                            value = pro.technology, // FIXED: Use 'qual'
+                            onValueChange = { onFieldChange(index, null, it, null) },
+                            label = { Text("Technology") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Next)
+                            }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            // Start Date Field with Calendar
-
-                            DateFieldWithPicker(
-                                label = "Completion\n Date",
-                                value = cert.startMonthYear,
-                                onValueChange = { onFieldChange(index, null, it, null, null) },
-                                textFieldColors = textFieldColors,
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            // End Date Field with Calendar
-                            if(!hasNoExpiry) {
-                            DateFieldWithPicker(
-                                label = "Expiry Date",
-                                value = cert.endMonthYear,
-                                onValueChange = {
-                                    onFieldChange(
-                                        index,
-                                        null,
-                                        null,
-                                        it,
-                                        null
-                                    )
-                                },
-                                textFieldColors = textFieldColors,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        }
-
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                        )
 
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-
                             OutlinedTextField(
-                                value = cert.topic,
+                                value = pro.description,
                                 onValueChange = {
                                     onFieldChange(
                                         index,
                                         null,
                                         null,
-                                        null,
                                         it
                                     )
                                 },
-                                label = { Text("Topic") },
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                label = { Text("Description") },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(
-                                    onDone = { focusManager.clearFocus()
-                                    onAdd()
+                                    onDone = {
+                                        focusManager.clearFocus()
+                                        if (pro.projectName.isNotBlank()) {
+                                            onNext()
+                                        }
                                     }
                                 ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
-
                         }
                     }
                 }
             }
+
             // ADD Button - Outside the card loop
             item {
                 Button(
@@ -248,7 +178,7 @@ fun CertificateScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                 ) {
-                    Text("+ Add Certificate", color = Color.White)
+                    Text("+ Add Project", color = Color.White)
                 }
             }
 
@@ -275,17 +205,3 @@ fun CertificateScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CertificateScreenPreview() {
-    MyResumeAppTheme {
-        CertificateScreen(
-            uiState = UiState(),
-            onPrev = {},
-            onNext = {},
-            onAdd = {},
-            onRemove = {},
-            onFieldChange = { _, _, _, _, _ -> }
-        )
-    }
-}

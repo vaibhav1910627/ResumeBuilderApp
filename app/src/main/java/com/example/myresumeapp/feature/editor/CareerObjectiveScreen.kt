@@ -1,4 +1,4 @@
-package com.example.myresumeapp.uiscreens
+package com.example.myresumeapp.feature.editor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,35 +27,28 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-//import androidx.wear.compose.foundation.weight
-import com.example.myresumeapp.data.UiState
-import com.example.myresumeapp.ui.theme.MyResumeAppTheme
-import kotlin.text.filter
-import kotlin.text.isDigit
+import com.example.myresumeapp.data.model.UiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageScreen(
+fun CareerObjectiveScreen(
     uiState: UiState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
-    onAdd: () -> Unit,
-    onRemove: (Int) -> Unit,
+//    onAdd: () -> Unit,
+//    onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
-    onFieldChange: (index: Int, language: String?, proficiency: String?) -> Unit,
 
+    onFieldChange: (careerDescription: String?) -> Unit
 
-    ) {
-
-    val textColor = MaterialTheme.colorScheme.onBackground
+) {
     val focusManager = LocalFocusManager.current
+    val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
@@ -91,11 +83,12 @@ fun LanguageScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text("Language", style = MaterialTheme.typography.headlineMedium)
+                Text("Career Objective", style = MaterialTheme.typography.headlineMedium)
             }
 
             // Loop through the list of qualifications
-            itemsIndexed(uiState.resume.language) { index, lang ->
+            val car = uiState.resume.career
+            item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(4.dp)
@@ -104,76 +97,40 @@ fun LanguageScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                "Langauge #${index + 1}",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.weight(1f))
-                            // Only show remove if there is more than one
-                            if (uiState.resume.language.size > 1) {
-                                TextButton(onClick = { onRemove(index) }) {
-                                    Text("Remove", color = Color.Red)
-                                }
-                            }
-                        }
 
-
-                        OutlinedTextField(
-                            value = lang.language, // FIXED: Use 'qual'
-                            onValueChange = { onFieldChange(index, it, null) },
-                            label = { Text("Language") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next ),
-                            keyboardActions = KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(FocusDirection.Next)
-                                }
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                        Text(
+                            "Not more than 50words ",
+                            style = MaterialTheme.typography.titleMedium
                         )
+                        Spacer(Modifier.weight(1f))
+
+
 
                         OutlinedTextField(
-                            value = lang.proficiency,
-                            onValueChange = {
-                                onFieldChange(index,null, it)
-                            },
-                            label = {Text("Proficiency (e.g. Native, Fluent, B2, A2)")},
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done
-                            ),
+                            value = car.careerDescription,// FIXED: Use 'qual' from the loop
+                            onValueChange = { onFieldChange(it) },
+                            label = { Text("What's your objective") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
                                 onDone = {
+
                                     focusManager.clearFocus()
-                                    onAdd()
+                                    if (car.careerDescription.isNotBlank()) {
+                                        onNext()
+                                    }
                                 }
                             ),
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = textFieldColors
-
+                            shape = RoundedCornerShape(16.dp)
                         )
+
+
                     }
                 }
             }
 
-            // ADD Button - Outside the card loop
-            item {
-                Button(
-                    onClick = onAdd,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                ) {
-                    Text("+ Add Language", color = Color.White)
-                }
-            }
 
             // NEXT Button - At the bottom
-
-
-            // ADD Button - Outside the card loop
-
-            // NEXT Button - At the bottom of the list
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -189,22 +146,5 @@ fun LanguageScreen(
             }
         }
     }
+
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun LanguageScreenPreview() {
-    MyResumeAppTheme {
-        LanguageScreen(
-            uiState = UiState(),
-            onPrev = {},
-            onNext = {},
-            onAdd = {},
-            onRemove = {},
-            onFieldChange = { _, _, _-> }
-        )
-    }
-}
-
-

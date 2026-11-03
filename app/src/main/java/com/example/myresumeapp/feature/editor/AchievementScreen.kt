@@ -1,5 +1,3 @@
-package com.example.myresumeapp.uiscreens
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,27 +26,27 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.myresumeapp.data.CareerObjective
-import com.example.myresumeapp.data.UiState
+import com.example.myresumeapp.data.model.UiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CareerObjectiveScreen(
+fun AchievementScreen(
     uiState: UiState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
-//    onAdd: () -> Unit,
-//    onRemove: (Int) -> Unit,
+    onAdd: () -> Unit,
+    onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
+    onFieldChange: (index: Int, achievement: String?, description: String?) -> Unit,
 
-    onFieldChange: (careerDescription: String?) -> Unit
 
-) {
+    ) {
     val focusManager = LocalFocusManager.current
     val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
@@ -84,12 +83,11 @@ fun CareerObjectiveScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text("Career Objective", style = MaterialTheme.typography.headlineMedium)
+                Text("Achievements", style = MaterialTheme.typography.headlineMedium)
             }
 
             // Loop through the list of qualifications
-            val car = uiState.resume.career
-            item {
+            itemsIndexed(uiState.resume.achievements) { index, ach ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(4.dp)
@@ -98,31 +96,49 @@ fun CareerObjectiveScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-
-                        Text(
-                            "Not more than 50words ",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Spacer(Modifier.weight(1f))
-
-
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "Achievement #${index + 1}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(Modifier.weight(1f))
+                            // Only show remove if there is more than one
+                            if (uiState.resume.achievements.size > 1) {
+                                TextButton(onClick = { onRemove(index) }) {
+                                    Text("Remove", color = Color.Red)
+                                }
+                            }
+                        }
 
                         OutlinedTextField(
-                            value = car.careerDescription,// FIXED: Use 'qual' from the loop
-                            onValueChange = { onFieldChange(it) },
-                            label = { Text("What's your objective") },
+                            value = ach.achievements, // FIXED: Use 'qual' from the loop
+                            onValueChange = { onFieldChange(index, it, null) },
+                            label = { Text("Achievements") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Next)
+                                }
+                            ),
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+
+                        OutlinedTextField(
+                            value = ach.description, // FIXED: Use 'qual'
+                            onValueChange = { onFieldChange(index, null, it) },
+                            label = { Text("Description") },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
                                 onDone = {
-
                                     focusManager.clearFocus()
-                                    if (car.careerDescription.isNotBlank()) {
+                                    if (ach.achievements.isNotBlank()) {
                                         onNext()
                                     }
                                 }
                             ),
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )
 
 
@@ -130,8 +146,23 @@ fun CareerObjectiveScreen(
                 }
             }
 
+            // ADD Button - Outside the card loop
+            item {
+                Button(
+                    onClick = onAdd,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                ) {
+                    Text("+ Add Achievement", color = Color.White)
+                }
+            }
 
             // NEXT Button - At the bottom
+
+
+            // ADD Button - Outside the card loop
+
+            // NEXT Button - At the bottom of the list
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -147,5 +178,5 @@ fun CareerObjectiveScreen(
             }
         }
     }
-
 }
+

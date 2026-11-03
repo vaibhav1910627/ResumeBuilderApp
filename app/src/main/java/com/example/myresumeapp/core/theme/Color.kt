@@ -1,4 +1,4 @@
-package com.example.myresumeapp.ui.theme
+package com.example.myresumeapp.core.theme
 
 import androidx.compose.ui.graphics.Color
 

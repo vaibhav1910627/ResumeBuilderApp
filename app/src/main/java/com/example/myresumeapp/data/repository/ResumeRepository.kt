@@ -1,5 +1,7 @@
+package com.example.myresumeapp.data.repository
+
 import android.graphics.Bitmap
-import com.example.myresumeapp.data.ResumeData
+import com.example.myresumeapp.data.model.ResumeData
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
@@ -9,9 +11,10 @@ import com.google.firebase.storage.storage
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.UUID
+import javax.inject.Inject
 
 
-class ResumeRepository {
+class ResumeRepository @Inject constructor() {
     private val firebaseDatabase: DatabaseReference = Firebase.database.reference
     private val firebaseStorage: StorageReference = Firebase.storage.reference
     private val userID: String get() = Firebase.auth.currentUser?.uid ?: "guest"

@@ -1,4 +1,4 @@
-package com.example.myresumeapp.utils
+package com.example.myresumeapp.core.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import androidx.compose.foundation.Canvas as ComposeCanvas
 import androidx.compose.foundation.layout.Box
@@ -18,20 +19,20 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myresumeapp.data.Achievements
-import com.example.myresumeapp.data.CareerObjective
-import com.example.myresumeapp.data.Certificates
-import com.example.myresumeapp.data.Experience
-import com.example.myresumeapp.data.HigherEducation
-import com.example.myresumeapp.data.Language
-import com.example.myresumeapp.data.PersonalDetails
-import com.example.myresumeapp.data.Project
-import com.example.myresumeapp.data.ResumeData
-import com.example.myresumeapp.data.School10Education
-import com.example.myresumeapp.data.School12Education
-import com.example.myresumeapp.data.Skills
-import com.example.myresumeapp.data.Skills2
-import com.example.myresumeapp.data.Skills3
+import com.example.myresumeapp.data.model.Achievements
+import com.example.myresumeapp.data.model.CareerObjective
+import com.example.myresumeapp.data.model.Certificates
+import com.example.myresumeapp.data.model.Experience
+import com.example.myresumeapp.data.model.HigherEducation
+import com.example.myresumeapp.data.model.Language
+import com.example.myresumeapp.data.model.PersonalDetails
+import com.example.myresumeapp.data.model.Project
+import com.example.myresumeapp.data.model.ResumeData
+import com.example.myresumeapp.data.model.School10Education
+import com.example.myresumeapp.data.model.School12Education
+import com.example.myresumeapp.data.model.Skills
+import com.example.myresumeapp.data.model.Skills2
+import com.example.myresumeapp.data.model.Skills3
 
 private const val PAGE_WIDTH = 595
 private const val PAGE_HEIGHT = 842
@@ -42,9 +43,9 @@ fun generateResumePDFToURI(
     photo: Bitmap?,
     outputURI: Uri
 ) {
-    val pdf = android.graphics.pdf.PdfDocument()
+    val pdf = PdfDocument()
     val pageInfo =
-        android.graphics.pdf.PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
+        PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
     val page = pdf.startPage(pageInfo)
 
     drawResumeContent(page.canvas, resume, photo)

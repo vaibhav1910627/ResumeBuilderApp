@@ -1,6 +1,5 @@
-package com.example.myresumeapp.uiscreens
+package com.example.myresumeapp.feature.preview
 
-import android.R
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeCard
-import com.example.myresumeapp.data.UiState
+import com.example.myresumeapp.data.model.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

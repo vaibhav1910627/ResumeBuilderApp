@@ -1,3 +1,5 @@
+package com.example.myresumeapp.feature.editor
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +17,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -24,31 +27,43 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myresumeapp.data.UiState
-
+import com.example.myresumeapp.data.model.UiState
+import com.example.myresumeapp.core.theme.MyResumeAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun AchievementScreen(
+fun CertificateScreen(
     uiState: UiState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
     onAdd: () -> Unit,
     onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
-    onFieldChange: (index: Int, achievement: String?, description: String?) -> Unit,
+    onFieldChange: (
+        index: Int,
+        association: String?,
+        startMonthYear: String?,
+        endMonthYear: String?,
+        topic: String?
+    ) -> Unit,
 
 
     ) {
     val focusManager = LocalFocusManager.current
+
     val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
@@ -84,11 +99,11 @@ fun AchievementScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text("Achievements", style = MaterialTheme.typography.headlineMedium)
+                Text("Certificates", style = MaterialTheme.typography.headlineMedium)
             }
 
             // Loop through the list of qualifications
-            itemsIndexed(uiState.resume.achievements) { index, ach ->
+            itemsIndexed(uiState.resume.certificate) { index, cert ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(4.dp)
@@ -97,14 +112,17 @@ fun AchievementScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+
+                        var hasNoExpiry by remember { mutableStateOf(cert.endMonthYear.isBlank()) }
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                "Achievement #${index + 1}",
+                                "Certificate #${index + 1}",
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(Modifier.weight(1f))
                             // Only show remove if there is more than one
-                            if (uiState.resume.achievements.size > 1) {
+                            if (uiState.resume.certificate.size > 1) {
                                 TextButton(onClick = { onRemove(index) }) {
                                     Text("Remove", color = Color.Red)
                                 }
@@ -112,41 +130,110 @@ fun AchievementScreen(
                         }
 
                         OutlinedTextField(
-                            value = ach.achievements, // FIXED: Use 'qual' from the loop
-                            onValueChange = { onFieldChange(index, it, null) },
-                            label = { Text("Achievements") },
+                            value = cert.association, // FIXED: Use 'qual' from the loop
+                            onValueChange = {
+                                onFieldChange(
+                                    index,
+                                    it,
+                                    null,
+                                    null,
+                                    null
+                                )
+                            },
+                            label = { Text("Association") },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(FocusDirection.Next)
-                                }
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()){
 
-                        OutlinedTextField(
-                            value = ach.description, // FIXED: Use 'qual'
-                            onValueChange = { onFieldChange(index, null, it) },
-                            label = { Text("Description") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    focusManager.clearFocus()
-                                    if (ach.achievements.isNotBlank()) {
-                                        onNext()
-                                    }
+
+                        Checkbox(
+                            checked = hasNoExpiry,
+                            onCheckedChange = { isChecked ->
+                                hasNoExpiry = isChecked
+                                if (!isChecked) {
+                                    onFieldChange(index, null, null, "", null)
+
                                 }
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                            })
+                        Text(
+                            "This certificate has no expiry date",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = textColor
                         )
+                    }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            // Start Date Field with Calendar
+
+                            DateFieldWithPicker(
+                                label = "Completion\n Date",
+                                value = cert.startMonthYear,
+                                onValueChange = { onFieldChange(index, null, it, null, null) },
+                                textFieldColors = textFieldColors,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            // End Date Field with Calendar
+                            if(!hasNoExpiry) {
+                            DateFieldWithPicker(
+                                label = "Expiry Date",
+                                value = cert.endMonthYear,
+                                onValueChange = {
+                                    onFieldChange(
+                                        index,
+                                        null,
+                                        null,
+                                        it,
+                                        null
+                                    )
+                                },
+                                textFieldColors = textFieldColors,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        }
 
 
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+
+                            OutlinedTextField(
+                                value = cert.topic,
+                                onValueChange = {
+                                    onFieldChange(
+                                        index,
+                                        null,
+                                        null,
+                                        null,
+                                        it
+                                    )
+                                },
+                                label = { Text("Topic") },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                keyboardActions = KeyboardActions(
+                                    onDone = { focusManager.clearFocus()
+                                    onAdd()
+                                    }
+                                ),
+                                modifier = Modifier.weight(1f),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                            )
+
+                        }
                     }
                 }
             }
-
             // ADD Button - Outside the card loop
             item {
                 Button(
@@ -154,7 +241,7 @@ fun AchievementScreen(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
                 ) {
-                    Text("+ Add Achievement", color = Color.White)
+                    Text("+ Add Certificate", color = Color.White)
                 }
             }
 
@@ -181,3 +268,17 @@ fun AchievementScreen(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun CertificateScreenPreview() {
+    MyResumeAppTheme {
+        CertificateScreen(
+            uiState = UiState(),
+            onPrev = {},
+            onNext = {},
+            onAdd = {},
+            onRemove = {},
+            onFieldChange = { _, _, _, _, _ -> }
+        )
+    }
+}

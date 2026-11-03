@@ -1,7 +1,6 @@
-package com.example.myresumeapp.data
+package com.example.myresumeapp.data.model
 
 import android.net.Uri
-import javax.security.cert.Certificate
 
 
 data class Signup(

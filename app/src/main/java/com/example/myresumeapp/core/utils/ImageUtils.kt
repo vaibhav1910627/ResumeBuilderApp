@@ -1,4 +1,4 @@
-package com.example.myresumeapp.utils
+package com.example.myresumeapp.core.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.net.Uri
-import com.example.myresumeapp.data.ResumeData
+import com.example.myresumeapp.data.model.ResumeData
 
 fun generateResumeImageToURI(
     context: Context,

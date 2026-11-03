@@ -1,4 +1,4 @@
-package com.example.myresumeapp.uiscreens
+package com.example.myresumeapp.feature.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,26 +25,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(onSignupSuccess: () -> Unit, onNavigateToLogin: () -> Unit, onGuestLogin: () -> Unit) {
-    // State variables for the fields
-    var name by remember { mutableStateOf("") }
+fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToSignup: () -> Unit, onGuestLogin:() -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-
-    // Theme-adaptive colors (Same as LoginScreen)
     val textColor = MaterialTheme.colorScheme.onBackground
+
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
         focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-        focusedLabelColor = MaterialTheme.colorScheme.primary
+        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
     )
 
     Scaffold { padding ->
@@ -56,97 +50,42 @@ fun SignupScreen(onSignupSuccess: () -> Unit, onNavigateToLogin: () -> Unit, onG
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Create Account",
-                style = MaterialTheme.typography.headlineLarge,
-                color = textColor
-            )
-            Text(
-                text = "Join us to build your professional resume",
-                style = MaterialTheme.typography.bodyMedium,
-                color = textColor.copy(alpha = 0.7f)
-            )
-
+            Text("Welcome Back", style = MaterialTheme.typography.headlineLarge, color = textColor)
             Spacer(Modifier.height(32.dp))
 
-            // Name Field
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Full Name") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = textFieldColors,
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            // Email Field
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email Address") },
+                label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = textFieldColors,
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true
+                shape = RoundedCornerShape(16.dp)
             )
-
             Spacer(Modifier.height(16.dp))
 
-            // Password Field
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = textFieldColors,
-                shape = RoundedCornerShape(16.dp),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                // visualTransformation = PasswordVisualTransformation()
             )
+            Spacer(Modifier.height(24.dp))
 
-            Spacer(Modifier.height(16.dp))
-
-            // Confirm Password Field
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = textFieldColors,
-                shape = RoundedCornerShape(16.dp),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true,
-                isError = confirmPassword.isNotEmpty() && password != confirmPassword
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            // Signup ButtonMaterialTheme.typography.headlineLarge,
             Button(
-                onClick = {
-                    // Add validation logic here before success
-                    if (password == confirmPassword && email.isNotBlank()) {
-                        onSignupSuccess()
-                    }
-                },
+                onClick = { /* Call ViewModel Login */ onLoginSuccess() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                shape = RoundedCornerShape(16.dp),
-                enabled = name.isNotBlank() && email.isNotBlank() && password.length >= 6
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
             ) {
-                Text("Sign Up")
+                Text("Login")
             }
 
-            // Navigate back to Login
-            TextButton(onClick = onNavigateToLogin) {
-                Text(
-                    text = "Already have an account? Login",
-                    color = MaterialTheme.colorScheme.primary
-                )
+            TextButton(onClick = onNavigateToSignup) {
+                Text("Don't have an account? Sign Up", color = MaterialTheme.colorScheme.primary)
             }
 
             Button(
@@ -163,7 +102,7 @@ fun SignupScreen(onSignupSuccess: () -> Unit, onNavigateToLogin: () -> Unit, onG
             ) {
                 Text("Guest",style = MaterialTheme.typography.headlineLarge, color = Color.White)
             }
-            Text("We don't want your data")
+            Text("We dont want your data")
+        }
     }
-}
 }

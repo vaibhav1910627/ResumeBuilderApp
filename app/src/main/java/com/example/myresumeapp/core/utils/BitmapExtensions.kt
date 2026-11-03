@@ -1,4 +1,4 @@
-package com.example.myresumeapp.utils
+package com.example.myresumeapp.core.utils
 
 import android.graphics.Bitmap
 

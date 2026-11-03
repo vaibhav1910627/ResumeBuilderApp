@@ -2,29 +2,25 @@ package com.example.myresumeapp.navigation
 
 import AchievementScreen
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myresumeapp.data.Achievements
-import com.example.myresumeapp.data.CareerObjective
-import com.example.myresumeapp.uiscreens.CareerObjectiveScreen
-import com.example.myresumeapp.uiscreens.CertificateScreen
-import com.example.myresumeapp.uiscreens.ExperienceScreen
-import com.example.myresumeapp.uiscreens.HigherEducationScreen
-import com.example.myresumeapp.uiscreens.LanguageScreen
-import com.example.myresumeapp.uiscreens.LoginScreen
-import com.example.myresumeapp.uiscreens.PersonalScreen
-import com.example.myresumeapp.uiscreens.PreviewScreen
-import com.example.myresumeapp.uiscreens.ProjectScreen
-import com.example.myresumeapp.uiscreens.SchoolEducation10Screen
-import com.example.myresumeapp.uiscreens.SchoolEducation12Screen
-import com.example.myresumeapp.uiscreens.SignupScreen
-import com.example.myresumeapp.uiscreens.SkillScreen
-import com.example.myresumeapp.viewmodel.ResumeViewModel
+import com.example.myresumeapp.feature.editor.CareerObjectiveScreen
+import com.example.myresumeapp.feature.editor.CertificateScreen
+import com.example.myresumeapp.feature.editor.ExperienceScreen
+import com.example.myresumeapp.feature.editor.HigherEducationScreen
+import com.example.myresumeapp.feature.editor.LanguageScreen
+import com.example.myresumeapp.feature.auth.LoginScreen
+import com.example.myresumeapp.feature.editor.PersonalScreen
+import com.example.myresumeapp.feature.preview.PreviewScreen
+import com.example.myresumeapp.feature.editor.ProjectScreen
+import com.example.myresumeapp.feature.editor.SchoolEducation10Screen
+import com.example.myresumeapp.feature.editor.SchoolEducation12Screen
+import com.example.myresumeapp.feature.auth.SignupScreen
+import com.example.myresumeapp.feature.editor.SkillScreen
+import com.example.myresumeapp.feature.viewmodel.ResumeViewModel
 
 object Routes {
     const val SIGNUP = "signup"

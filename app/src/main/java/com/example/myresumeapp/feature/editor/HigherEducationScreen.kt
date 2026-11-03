@@ -1,4 +1,4 @@
-package com.example.myresumeapp.uiscreens
+package com.example.myresumeapp.feature.editor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,10 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -39,10 +35,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myresumeapp.data.HigherEducation
 //import androidx.wear.compose.foundation.weight
-import com.example.myresumeapp.data.UiState
-import com.example.myresumeapp.ui.theme.MyResumeAppTheme
+import com.example.myresumeapp.data.model.UiState
+import com.example.myresumeapp.core.theme.MyResumeAppTheme
 import kotlin.text.filter
 import kotlin.text.isDigit
 

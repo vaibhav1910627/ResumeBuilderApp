@@ -1,7 +1,8 @@
-package com.example.myresumeapp.viewmodel
+package com.example.myresumeapp.feature.viewmodel
 
 //import androidx.wear.compose.foundation.size
-import ResumeRepository
+//import ResumeRepository
+import com.example.myresumeapp.data.repository.ResumeRepository
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -11,24 +12,29 @@ import android.provider.MediaStore
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myresumeapp.data.Achievements
-import com.example.myresumeapp.data.CareerObjective
-import com.example.myresumeapp.data.Certificates
-import com.example.myresumeapp.data.Experience
-import com.example.myresumeapp.data.HigherEducation
-import com.example.myresumeapp.data.Language
-import com.example.myresumeapp.data.Project
-import com.example.myresumeapp.data.Skills
-import com.example.myresumeapp.data.UiState
-import com.example.myresumeapp.utils.generateResumeImageToURI
-import com.example.myresumeapp.utils.generateResumePDFToURI
-import com.example.myresumeapp.utils.toSoftwareBitmap
+import com.example.myresumeapp.data.model.Achievements
+import com.example.myresumeapp.data.model.Certificates
+import com.example.myresumeapp.data.model.Experience
+import com.example.myresumeapp.data.model.HigherEducation
+import com.example.myresumeapp.data.model.Language
+import com.example.myresumeapp.data.model.Project
+import com.example.myresumeapp.data.model.Skills
+import com.example.myresumeapp.data.model.UiState
+import com.example.myresumeapp.core.utils.generateResumeImageToURI
+import com.example.myresumeapp.core.utils.generateResumePDFToURI
+import com.example.myresumeapp.core.utils.toSoftwareBitmap
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ResumeViewModel(app: Application): AndroidViewModel(app) {
-    private val resumeRepository = ResumeRepository()
+@HiltViewModel
+class ResumeViewModel @Inject constructor (
+        application: Application,
+    private val resumeRepository: ResumeRepository
+): AndroidViewModel(application) {
+//    private val resumeRepository = ResumeRepository()
     private val internalUiState = mutableStateOf(UiState())
     val uiState: UiState get() = internalUiState.value
 

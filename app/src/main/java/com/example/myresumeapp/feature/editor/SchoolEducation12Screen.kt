@@ -1,4 +1,4 @@
-package com.example.myresumeapp.uiscreens
+package com.example.myresumeapp.feature.editor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,19 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-//import androidx.wear.compose.foundation.weight
-import com.example.myresumeapp.data.UiState
-import kotlin.text.filter
-import kotlin.text.isDigit
-
-
-
-
+import com.example.myresumeapp.data.model.UiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SchoolEducation10Screen(
+fun SchoolEducation12Screen(
     uiState: UiState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
@@ -48,7 +40,7 @@ fun SchoolEducation10Screen(
 //    onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
 
-    onFieldChange: (school10: String?, board10: String?, startYear10: String?,endYear10: String?, percent10: String?) -> Unit
+    onFieldChange: (school12: String?, board12: String?, startYear12: String?, endYear12: String?, percent12: String?) -> Unit
 
 ) {
 
@@ -91,7 +83,7 @@ fun SchoolEducation10Screen(
             }
 
             // Loop through the list of qualifications
-            val edu1 = uiState.resume.school10Education
+            val edu2 = uiState.resume.school12Education
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -102,24 +94,24 @@ fun SchoolEducation10Screen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
 
-                            Text(
-                                "Secondary Education(Class 10)",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.weight(1f))
+                        Text(
+                            "Senior Secondary Education(Class 12)",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Spacer(Modifier.weight(1f))
 
 
 
                         OutlinedTextField(
-                            value = edu1.school10 ,// FIXED: Use 'qual' from the loop
-                            onValueChange = { onFieldChange(it, null, null, null, null) },
+                            value = edu2.school12 ,// FIXED: Use 'qual' from the loop
+                            onValueChange = { onFieldChange( it, null, null, null, null) },
                             label = { Text("School Name") },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
 
                         OutlinedTextField(
-                            value = edu1.board10, // FIXED: Use 'qual'
+                            value = edu2.board12, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(null, it, null, null, null) },
                             label = { Text("Board") },
                             modifier = Modifier.fillMaxWidth(),
@@ -131,14 +123,14 @@ fun SchoolEducation10Screen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             OutlinedTextField(
-                                value = edu1.startYear10,
+                                value = edu2.startYear12,
                                 onValueChange = { input ->
                                     val processedValue = if (input.length >= 4) {
-                                    val year = input.filter { it.isDigit() }.toIntOrNull()
-                                    if (year != null && year > 2025) "0" else input
-                                } else {
-                                    input
-                                }
+                                        val year = input.filter { it.isDigit() }.toIntOrNull()
+                                        if (year != null && year > 2025) "0" else input
+                                    } else {
+                                        input
+                                    }
                                     onFieldChange(
                                         null,
                                         null,
@@ -152,7 +144,7 @@ fun SchoolEducation10Screen(
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
                             OutlinedTextField(
-                                value = edu1.endYear10,
+                                value = edu2.endYear12,
                                 onValueChange = { input ->
                                     val processedValue = if (input.length >= 4) {
                                         val year = input.filter { it.isDigit() }.toIntOrNull()
@@ -164,8 +156,7 @@ fun SchoolEducation10Screen(
                                         null,
                                         null,
                                         null,
-                                        processedValue,
-                                        null
+                                        processedValue, null
                                     )
                                 },
                                 label = { Text("End Year") },
@@ -174,7 +165,7 @@ fun SchoolEducation10Screen(
                             )
 
                             OutlinedTextField(
-                                value = edu1.percentage10,
+                                value = edu2.percentage12,
                                 onValueChange = { input ->
                                     val processedValue = if (input.length >= 4) {
                                         val percentageedu = input.filter { it.isDigit() }.toIntOrNull()
@@ -195,8 +186,8 @@ fun SchoolEducation10Screen(
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
 
-                    }
                         }
+                    }
                 }
             }
 
@@ -219,4 +210,3 @@ fun SchoolEducation10Screen(
         }
     }
 }
-
