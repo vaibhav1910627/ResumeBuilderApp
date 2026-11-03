@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeTopAppBar
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
 import java.text.SimpleDateFormat
@@ -72,15 +73,9 @@ fun ExperienceScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("My Resume", color = textColor) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent), // Fixed parameter name
-                navigationIcon = {
-                    TextButton(onClick = onPrev,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)) {
-                        Text("Back", color = Color.White)
-                    }
-                }
+            ResumeTopAppBar(
+                title = "Experience",
+                onBack = onPrev
             )
         }
     ) { paddingValues ->

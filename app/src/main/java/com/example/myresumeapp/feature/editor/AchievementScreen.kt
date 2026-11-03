@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.UiState
 
 
@@ -60,17 +61,9 @@ fun AchievementScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("My Resume", color = textColor) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent), // Fixed parameter name
-                navigationIcon = {
-                    TextButton(
-                        onClick = onPrev,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                    ) {
-                        Text("Back", color = Color.White)
-                    }
-                }
+            ResumeTopAppBar(
+                title = "Achievement(s)",
+                onBack = onPrev
             )
         }
     ) { paddingValues ->

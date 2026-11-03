@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.Skills
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
@@ -184,17 +185,9 @@ fun SkillScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("My Resume", color = textColor) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent), // Fixed parameter name
-                navigationIcon = {
-                    TextButton(
-                        onClick = onPrev,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                    ) {
-                        Text("Back", color = Color.White)
-                    }
-                }
+            ResumeTopAppBar(
+                title = "Skill",
+                onBack = onPrev
             )
         }
     ) { paddingValues ->

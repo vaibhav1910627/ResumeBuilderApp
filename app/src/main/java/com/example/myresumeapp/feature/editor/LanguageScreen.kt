@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeTopAppBar
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
 import com.example.myresumeapp.core.theme.MyResumeAppTheme
@@ -66,17 +67,9 @@ fun LanguageScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("My Resume", color = textColor) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent), // Fixed parameter name
-                navigationIcon = {
-                    TextButton(
-                        onClick = onPrev,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                    ) {
-                        Text("Back", color = Color.White)
-                    }
-                }
+            ResumeTopAppBar(
+                title = "Language",
+                onBack = onPrev
             )
         }
     ) { paddingValues ->

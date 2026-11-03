@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.myresumeapp.R
+import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.UiState
 
 
@@ -83,21 +84,25 @@ fun PersonalScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("My Resume", color = textColor) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
-                navigationIcon = {
-                    Button(
-                        onClick = {/*  */ },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Open Navigation"
-                        )
-                    }
-                }
+            ResumeTopAppBar(
+                title = "Personal Details",
+                onBack = {}
             )
+//                title = { Text("My Resume", color = textColor) },
+//                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+//                navigationIcon = {
+//                    Button(
+//                        onClick = {/*  */ },
+//                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Menu,
+//                            contentDescription = "Open Navigation"
+//                        )
+//                    }
+//                }
+//            )
+//        }
         }
     ) { paddingValues ->
         LazyColumn(
