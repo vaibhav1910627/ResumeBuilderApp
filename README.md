@@ -1,30 +1,26 @@
 # 📄 Resume Builder Android App
 
-A modern, native Android application built with **Kotlin** and **Jetpack Compose** that allows users to create, preview, and export professional resumes as formatted PDFs. Integrated with **Firebase** for cloud data persistence and authentication.
+A modern, native Android application built with **Kotlin**, **Jetpack Compose**, and **Dagger Hilt** that allows users to create, preview, and export professional resumes as formatted PDFs. Integrated with **Firebase** for cloud data persistence and authentication, following clean **MVVM architecture**.
 
 ---
 
 ## 🚀 Features
 
 - **Intuitive UI**: Built entirely with Jetpack Compose and Material 3 guidelines.
-- **Comprehensive Sections**:
-  - Personal Details & Profile Photo (with Coil integration)
-  - Career Objective
-  - Education (Higher Education, Senior Secondary, Secondary)
-  - Work Experience
-  - Projects & Technical Stack
-  - Certifications & Associations
-  - Key Skills (Categorized into Tech Skills, Soft Skills, and Languages)
-  - Achievements & Extracurricular Activities
-- **Native PDF Export**: Generates professionally styled PDF documents using Android's native `PdfDocument` and Canvas API, matching clean professional resume templates.
-- **Cloud Integration**: Firebase Authentication, Realtime Database, and Cloud Storage for saving and syncing resume data.
+- **Smart Form UX**: Soft keyboard `Next`/`Done` focus navigation and auto-card generation.
+- **Advanced Input Components**: Autocomplete Skill Picker with interactive chip tags.
+- **Comprehensive Sections**: Personal details, Career Objective, Education with year validations, Work Experience, Projects, Certifications with "No Expiry" toggles, Languages with proficiency levels, and Achievements.
+- **Native PDF Export**: Generates professionally styled PDF documents using Android's native `PdfDocument` and Canvas API, matching professional resume templates (`resume_template.docx`).
+- **Cloud Integration**: Firebase Authentication, Realtime Database, and Cloud Storage.
 
 ---
 
-## 🛠️ Tech Stack & Libraries
+## 🛠️ Tech Stack & Architecture
 
 - **Language**: [Kotlin](https://kotlinlang.org/)
 - **UI Framework**: [Jetpack Compose](https://developer.android.com/jetpack/compose) & Material 3
+- **Dependency Injection**: [Dagger Hilt](https://dagger.dev/hilt/) & KSP
+- **Architecture**: Clean Feature-Based MVVM (Model-View-ViewModel)
 - **Async & Concurrency**: Kotlin Coroutines & StateFlow
 - **PDF Rendering**: Android Graphics `PdfDocument` & Canvas API
 - **Image Loading**: [Coil](https://coil-kt.github.io/coil/) (`coil-compose`)
@@ -37,10 +33,20 @@ A modern, native Android application built with **Kotlin** and **Jetpack Compose
 
 ```text
 com.example.myresumeapp/
-├── data/           # Data models (ResumeData, Experience, Project, etc.) & Repository
-├── uiscreens/      # Compose UI Screens (Login, Signup, Resume Editor, Preview)
-├── utils/          # PDF Generation & Canvas utilities (PDFUtils.kt)
-└── ui/theme/       # Material 3 Theme configuration
+├── core/                       # Shared utilities, theme, and DI modules
+│   ├── theme/                  # Material 3 Color, Theme, and Typography
+│   └── utils/                  # PDFUtils, ImageUtils, BitmapExtensions
+├── data/                       # Data layer
+│   ├── model/                  # Data classes (ResumeData, UiState, Certificates, etc.)
+│   └── repository/             # ResumeRepository
+├── feature/                    # Feature-based presentation layer
+│   ├── auth/                   # Login & Signup screens
+│   ├── editor/                 # Personal, Education, Skills, Experience, etc.
+│   ├── preview/                # PreviewScreen & PDF/Image export
+│   └── viewmodel/              # ResumeViewModel (HiltViewModel)
+├── navigation/                 # Navigation graph and routes (NavRoutes.kt)
+├── MainActivity.kt             # Entry activity (@AndroidEntryPoint)
+└── MyResumeAppApplication.kt   # Hilt application container (@HiltAndroidApp)
 ```
 
 ---
@@ -66,4 +72,4 @@ com.example.myresumeapp/
 
 ## 📄 License
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is open-source and available under the [LICENSE](LICENSE).
