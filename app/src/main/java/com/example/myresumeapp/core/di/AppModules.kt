@@ -1,0 +1,41 @@
+package com.example.myresumeapp.core.di
+
+import android.content.Context
+import androidx.room.Room
+import androidx.work.WorkManager
+import com.example.myresumeapp.data.local.ResumeDao
+import com.example.myresumeapp.data.local.ResumeDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    @Provides
+    @Singleton
+
+    fun provideResumeDatabase(@ApplicationContext context: Context): ResumeDatabase {
+        return Room.databaseBuilder(
+            context,
+            ResumeDatabase::class.java,
+            "resume_database"
+
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideResumeDao(database: ResumeDatabase): ResumeDao {
+        return database.resumeDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
+    }
+}

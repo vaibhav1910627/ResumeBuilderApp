@@ -45,6 +45,8 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -79,8 +81,21 @@ dependencies {
     implementation("com.itextpdf:itextg:5.5.10")
 
     implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.52")
+    implementation("androidx.activity:activity-ktx:1.9.3")
+    ksp("com.google.dagger:hilt-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    //room database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    //workmanager for background sync
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
+
+    //Gson for storing complex nested resume objects as json in room
+    implementation("com.google.code.gson:gson:2.10.1")
+
 
 }
