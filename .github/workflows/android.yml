@@ -22,6 +22,14 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
         cache: 'gradle'
+        # Install Android SDK 36 on the runner
+    - name: Install Android SDK 36
+      run: |
+        yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;34.0.0"
+        
+
+      # google services
     - name: Decode Google Services JSON
       env:
         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
