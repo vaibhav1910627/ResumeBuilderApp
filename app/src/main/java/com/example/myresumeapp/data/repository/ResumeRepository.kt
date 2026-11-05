@@ -26,8 +26,13 @@ class ResumeRepository @Inject constructor(
     private val resumeDao: ResumeDao,
     private val workManager: WorkManager
 ) {
-    private val firebaseDatabase: DatabaseReference = Firebase.database.reference
-    private val firebaseStorage: StorageReference = Firebase.storage.reference
+    private val firebaseDatabase: DatabaseReference by lazy { Firebase.database.reference }
+    private val firebaseStorage: StorageReference by lazy { Firebase.storage.reference }
+       /* these two above while creating mockk caused problem why??
+        well resumerepo was trying to initialise firebase(specifically firebase.database.reference)
+        the exact moment the repo object was created in the last setup. Since firebase relied
+        on Android Os processes, it wasnt fully mocked during local unit tests of jvm..
+        we initialized by lazy to delay the initialization until a method actually uses it...*/
     private val userID: String get() = Firebase.auth.currentUser?.uid ?: "guest"
 
     suspend fun getLocalResume(): ResumeData? {

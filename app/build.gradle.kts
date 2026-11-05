@@ -97,5 +97,10 @@ dependencies {
     //Gson for storing complex nested resume objects as json in room
     implementation("com.google.code.gson:gson:2.10.1")
 
+    //unit testing
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation("app.cash.turbine:turbine:1.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 
 }
