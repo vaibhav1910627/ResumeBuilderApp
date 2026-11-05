@@ -1,6 +1,6 @@
 # 📄 Resume Builder Android App
 
-A modern, native Android application built with **Kotlin**, **Jetpack Compose**, and **Dagger Hilt** featuring a robust **Offline-First Architecture (Room Database + WorkManager)**. Allows users to create, preview, and export professional resumes as formatted PDFs, with automatic background synchronization to **Firebase**.
+A modern, native Android application built with **Kotlin**, **Jetpack Compose**, and **Dagger Hilt** featuring a robust **Offline-First Architecture (Room Database + WorkManager)**, **Unit Testing (JUnit4 + MockK)**, and an automated **CI/CD Pipeline (GitHub Actions)**. Allows users to create, preview, and export professional resumes as formatted PDFs, with automatic background synchronization to **Firebase**.
 
 ---
 
@@ -8,6 +8,7 @@ A modern, native Android application built with **Kotlin**, **Jetpack Compose**,
 
 - **Offline-First Capabilities**: Instantly saves resume data locally using Room Database so it persists even when offline or when the app is closed.
 - **Background Cloud Sync**: Automatically syncs local changes to Firebase Realtime Database and Cloud Storage in the background using Android's WorkManager when a network connection is available.
+- **Automated Testing & CI/CD**: Fully tested repository layer with JUnit4 & MockK, backed by a GitHub Actions CI/CD pipeline that runs tests and builds on every push.
 - **Intuitive UI**: Built entirely with Jetpack Compose and Material 3 guidelines, complete with a slide-out Navigation Drawer connecting all screens.
 - **Smart Form UX**: Soft keyboard `Next`/`Done` focus navigation and auto-card generation.
 - **Advanced Input Components**: Autocomplete Skill Picker with interactive chip tags.
@@ -23,6 +24,8 @@ A modern, native Android application built with **Kotlin**, **Jetpack Compose**,
 - **Dependency Injection**: [Dagger Hilt](https://dagger.dev/hilt/) & KSP
 - **Local Database**: [Room Database](https://developer.android.com/training/data-storage/room) & Gson
 - **Background Processing**: [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
+- **Unit Testing**: [JUnit4](https://junit.org/junit4/) & [MockK](https://mockk.io/)
+- **CI/CD Pipeline**: [GitHub Actions](https://github.com/features/actions)
 - **Architecture**: Clean Feature-Based MVVM with Offline-First Repository Pattern
 - **Async & Concurrency**: Kotlin Coroutines & StateFlow
 - **PDF Rendering**: Android Graphics `PdfDocument` & Canvas API
@@ -66,7 +69,9 @@ com.example.myresumeapp/
 
 ### Installation & Setup
 1. Clone the repository:
-   (git clone https://github.com/YOUR_USERNAME/ResumeBuilderApp.git)
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/ResumeBuilderApp.git
+   ```
 2. Open the project in Android Studio.
 3. Add your `google-services.json` file inside the `app/` directory (required for Firebase integration).
 4. Sync project with Gradle/JDK set to **Java 17**.
