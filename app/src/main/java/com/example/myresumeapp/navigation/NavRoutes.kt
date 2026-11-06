@@ -2,6 +2,7 @@ package com.example.myresumeapp.navigation
 
 import androidx.compose.material.icons.Icons.Default as Default
 import AchievementScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.activity.compose.LocalActivityResultRegistryOwner.provides
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -56,6 +57,7 @@ import com.example.myresumeapp.feature.auth.SignupScreen
 import com.example.myresumeapp.feature.editor.SkillScreen
 import com.example.myresumeapp.feature.viewmodel.ResumeViewModel
 import com.google.rpc.Code
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 object Routes {
@@ -85,7 +87,7 @@ object Routes {
 
 @Composable
 fun AppNavigation(navController: NavHostController = rememberNavController()) {
-    val resumeViewModel: ResumeViewModel = viewModel()
+    val resumeViewModel: ResumeViewModel = hiltViewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 

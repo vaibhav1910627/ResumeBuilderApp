@@ -103,4 +103,17 @@ dependencies {
     testImplementation("app.cash.turbine:turbine:1.1.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 
+    //to solve up the hilt dagger issue(get saved state handle holder, more of a android entry point issue
+    implementation("androidx.activity:activity:1.9.3")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.activity:activity-ktx:1.9.3")
+
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.google.dagger") {
+                useVersion("2.52")
+            }
+        }
+    }
+
 }

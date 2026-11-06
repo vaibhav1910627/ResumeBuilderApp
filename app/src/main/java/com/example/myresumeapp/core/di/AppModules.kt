@@ -24,7 +24,8 @@ object AppModule {
             ResumeDatabase::class.java,
             "resume_database"
 
-        ).build()
+        ).fallbackToDestructiveMigration()
+         .build()
     }
 
     @Provides
