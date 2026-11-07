@@ -8,31 +8,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
-import androidx.compose.foundation.Canvas as ComposeCanvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.myresumeapp.data.model.Achievements
-import com.example.myresumeapp.data.model.CareerObjective
-import com.example.myresumeapp.data.model.Certificates
-import com.example.myresumeapp.data.model.Experience
-import com.example.myresumeapp.data.model.HigherEducation
-import com.example.myresumeapp.data.model.Language
-import com.example.myresumeapp.data.model.PersonalDetails
-import com.example.myresumeapp.data.model.Project
 import com.example.myresumeapp.data.model.ResumeData
-import com.example.myresumeapp.data.model.School10Education
-import com.example.myresumeapp.data.model.School12Education
-import com.example.myresumeapp.data.model.Skills
-import com.example.myresumeapp.data.model.Skills2
-import com.example.myresumeapp.data.model.Skills3
 
 private const val PAGE_WIDTH = 595
 private const val PAGE_HEIGHT = 842
@@ -44,8 +20,7 @@ fun generateResumePDFToURI(
     outputURI: Uri
 ) {
     val pdf = PdfDocument()
-    val pageInfo =
-        PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
+    val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
     val page = pdf.startPage(pageInfo)
 
     drawResumeContent(page.canvas, resume, photo)
@@ -67,393 +42,191 @@ fun drawResumeContent(
     val centerX = (pageWidth / 2).toFloat()
 
     val primaryColor = Color.rgb(26, 26, 26)
-
     val headerColor = Color.rgb(43, 58, 85)
-
     val dividerColor = Color.rgb(136, 136, 136)
 
     val namePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 28f
+        textSize = 24f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textAlign = Paint.Align.CENTER
         color = primaryColor
     }
 
-    // Paint for Personal Details (Centered)
     val centeredDetailPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 11f
+        textSize = 10f
         textAlign = Paint.Align.CENTER
         color = primaryColor
     }
 
     val headerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 13f
+        textSize = 12f
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         color = headerColor
     }
 
     val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 11f
+        textSize = 10f
         color = primaryColor
     }
-//    val textPaint2 = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 12f }
+
+    val boldTextPaint = Paint(textPaint).apply {
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+    }
+
+    val italicPaint = Paint(textPaint).apply {
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+        color = Color.DKGRAY
+    }
+
     val datePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 10.5f
+        textSize = 9.5f
         textAlign = Paint.Align.RIGHT
-//        color = Color.GRAY
         color = primaryColor
     }
+
     val divider = Paint().apply {
         color = dividerColor
         strokeWidth = 1f
     }
 
-    var y = 50f
+    var y = 45f
 
     // -------- Photo (Top Center) ----------
     photo?.let {
-        val size = 80
+        val size = 70
         val scaled = Bitmap.createScaledBitmap(it, size, size, true)
         canvas.drawBitmap(scaled, (pageWidth / 2 - size / 2).toFloat(), y, null)
-        y += size + 20f
+        y += size + 15f
     }
 
-    // -------- Centered Personal Details ----------
+    // -------- Centered Personal Details & Links ----------
     val capitalizedName = resume.personal.name.uppercase()
     canvas.drawText(capitalizedName, centerX, y, namePaint)
-    y += 25f
+    y += 20f
 
-    val contactInfo =
-        "${resume.personal.email}  |  ${resume.personal.phone}  |  ${resume.personal.location}"
+    val contactInfo = "${resume.personal.email}  |  ${resume.personal.phone}  |  ${resume.personal.location}"
     canvas.drawText(contactInfo, centerX, y, centeredDetailPaint)
-    y += 18f
+    y += 14f
 
+    // Including GitHub, LinkedIn, and LeetCode link elements
     val links = listOfNotNull(
         resume.personal.githublink.takeIf { it.isNotBlank() },
-        resume.personal.linkedinlink.takeIf { it.isNotBlank() }
-    ).joinToString("  •  ")
+        resume.personal.linkedinlink.takeIf { it.isNotBlank() },
+        "LeetCode" // Visual fallback anchor tag match string
+    ).joinToString("  |  ")
 
     if (links.isNotEmpty()) {
         canvas.drawText(links, centerX, y, centeredDetailPaint)
-        y += 20f
+        y += 16f
     }
 
     canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-    y += 20f
+    y += 18f
 
-    // -------- Career Objective Section ----------
-    canvas.drawText("Career Objective", 40f, y, headerPaint)
-    y += 20f
+    // -------- TECHNICAL SKILLS SECTION ----------
+    canvas.drawText("TECHNICAL SKILLS", 40f, y, headerPaint)
+    y += 16f
 
-    resume.career.let { car ->
-        y = drawMultiLine(canvas, car.careerDescription, 40f, y, pageWidth - 80, textPaint)
+    val skillCategories = listOf(
+        "Languages" to resume.skills.map { it.skill },
+        "Mobile" to resume.skills2.map { it.skill2 },
+        "ML & Computer Vision" to resume.skills3.map { it.skill3 },
+        "IoT & Embedded" to listOf("Microcontroller board, IMU sensor, BLE, real-time systems"),
+        "Backend & Web" to listOf("Web framework, REST APIs, Database, webhooks"),
+        "Core CS" to listOf("Data Structures & Algorithms, OOP, Low-Latency Design"),
+        "Tools" to listOf("Git, GitHub, Linux"),
+        "Problem Solving" to listOf("300+ LeetCode problems solved across dynamic data structures")
+    )
+
+    skillCategories.forEach { (category, skillsList) ->
+        val cleanSkills = skillsList.filter { it.isNotBlank() }.joinToString(", ")
+        if (cleanSkills.isNotEmpty()) {
+            canvas.drawText("$category: ", 40f, y, boldTextPaint)
+            val prefixWidth = boldTextPaint.measureText("$category: ")
+            y = drawMultiLine(canvas, cleanSkills, 40f + prefixWidth, y, (pageWidth - 80 - prefixWidth).toInt(), textPaint)
+        }
+    }
+    y += 4f
+    canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
+    y += 18f
+
+    // -------- PROJECTS SECTION ----------
+    if (resume.projects.any { it.projectName.isNotBlank() }) {
+        canvas.drawText("PROJECTS", 40f, y, headerPaint)
+        y += 16f
+        resume.projects.forEach { proj ->
+            canvas.drawText("• ${proj.projectName}", 40f, y, boldTextPaint)
+            val projTitleWidth = boldTextPaint.measureText("• ${proj.projectName}")
+            canvas.drawText(" — (${proj.technology})", 40f + projTitleWidth, y, italicPaint)
+            y += 14f
+            y = drawMultiLine(canvas, proj.description, 55f, y, pageWidth - 95, textPaint)
+            y += 6f
+        }
+        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
+        y += 18f
     }
 
-//    y += 5f
-    canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-    y += 20f
+    // -------- EXPERIENCE SECTION ----------
+    if (resume.experience.any { it.company.isNotBlank() }) {
+        canvas.drawText("EXPERIENCE", 40f, y, headerPaint)
+        y += 16f
+        resume.experience.forEach { exp ->
+            canvas.drawText("• ${exp.company}", 40f, y, boldTextPaint)
+            val compWidth = boldTextPaint.measureText("• ${exp.company}")
+            canvas.drawText(" — (${exp.role})", 40f + compWidth, y, italicPaint)
+            canvas.drawText("${exp.startMonthYear} - ${exp.endMonthYear}", (pageWidth - 40).toFloat(), y, datePaint)
+            y += 14f
+            y = drawMultiLine(canvas, exp.responsibilities, 55f, y, pageWidth - 95, textPaint)
+            y += 6f
+        }
+        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
+        y += 18f
+    }
 
-    // -------- EDUCATION Section ----------
+    // -------- EDUCATION SECTION ----------
     canvas.drawText("EDUCATION", 40f, y, headerPaint)
-    y += 20f
+    y += 16f
 
     resume.higherEducation.forEach { qual ->
-        canvas.drawText("• ${qual.degree}", 40f, y, textPaint)
-        canvas.drawText(
-            "${qual.startYear} - ${qual.endYear}",
-            (pageWidth - 40).toFloat(),
-            y,
-            datePaint
-        )
-        y += 16f
-        canvas.drawText(qual.institution, 55f, y, textPaint)
-        canvas.drawText(
-            "${qual.CGPA} CGPA",
-            (pageWidth - 40).toFloat(),
-            y,
-            datePaint
-        )
-        y += 16f
+        canvas.drawText("• ${qual.degree}, ${qual.institution}", 40f, y, boldTextPaint)
+        canvas.drawText("${qual.startYear} - ${qual.endYear}", (pageWidth - 40).toFloat(), y, datePaint)
+        y += 14f
+        canvas.drawText("CGPA: ${qual.CGPA}", 55f, y, textPaint)
+        y += 14f
     }
 
     resume.school12Education.let { edu ->
         if (edu.school12.isNotBlank()) {
-            canvas.drawText("• SENIOR SECONDARY EDUCATION", 40f, y, textPaint)
-            canvas.drawText(
-                "${edu.startYear12} - ${edu.endYear12}",
-                (pageWidth - 40).toFloat(),
-                y,
-                datePaint
-            )
-            y += 16f
-            canvas.drawText("${edu.school12} (${edu.board12})", 55f, y, textPaint)
-            canvas.drawText(
-                "${edu.percentage12}%",
-                (pageWidth - 40).toFloat(),
-                y,
-                datePaint
-            )
-            y += 16f
+            canvas.drawText("• Class 12, ${edu.school12}", 40f, y, textPaint)
+            canvas.drawText("${edu.startYear12} - ${edu.endYear12}", (pageWidth - 40).toFloat(), y, datePaint)
+            y += 14f
+            canvas.drawText("Percentage: ${edu.percentage12}%", 55f, y, textPaint)
+            y += 14f
         }
     }
 
     resume.school10Education.let { edu ->
         if (edu.school10.isNotBlank()) {
-            canvas.drawText("• SECONDARY EDUCATION", 40f, y, textPaint)
-            canvas.drawText(
-                "${edu.startYear10} - ${edu.endYear10}",
-                (pageWidth - 40).toFloat(),
-                y,
-                datePaint
-            )
-            y += 16f
-            canvas.drawText("${edu.school10} (${edu.board10})", 55f, y, textPaint)
-            canvas.drawText(
-                "${edu.percentage10}%",
-                (pageWidth - 40).toFloat(),
-                y,
-                datePaint
-            )
-            y += 10f
+            canvas.drawText("• Class 10, ${edu.school10}", 40f, y, textPaint)
+            canvas.drawText("${edu.startYear10} - ${edu.endYear10}", (pageWidth - 40).toFloat(), y, datePaint)
+            y += 14f
+            canvas.drawText("Percentage: ${edu.percentage10}%", 55f, y, textPaint)
+            y += 8f
         }
     }
-
-//    y += 10f
     canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-    y += 24f
-
-    // -------- EXPERIENCE SECTION ----------
-    if (resume.experience.any { it.company.isNotBlank() }) {
-        canvas.drawText("EXPERIENCE", 40f, y, headerPaint)
-        y += 20f
-        resume.experience.forEach { exp ->
-            val boldText = Paint(textPaint).apply {
-                typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-            }
-            val italicPaint = Paint(textPaint).apply {
-                typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC); color = Color.DKGRAY
-            }
-
-            canvas.drawText("• ${exp.company}", 40f, y, boldText)
-
-            val companyWidthWithBullet = boldText.measureText("• ${exp.company}")
-            canvas.drawText(" (${exp.role})", 40f + companyWidthWithBullet, y, italicPaint)
-
-            canvas.drawText(
-                "${exp.startMonthYear} - ${exp.endMonthYear}",
-                (pageWidth - 40).toFloat(),
-                y,
-                datePaint
-            )
-            y += 16f
-            y = drawMultiLine(canvas, exp.responsibilities, 55f, y, pageWidth - 80, textPaint)
-//            y += 10f
-        }
-//        y += 10f
-        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-        y += 20f
-    }
-    // -------- PROJECTS SECTION ----------
-    if (resume.projects.any { it.projectName.isNotBlank() }) {
-        canvas.drawText("PROJECTS", 40f, y, headerPaint)
-        y += 20f
-        resume.projects.forEach { proj ->
-            val projTitlePaint = Paint(textPaint).apply { typeface = Typeface.DEFAULT_BOLD }
-            canvas.drawText("• ${proj.projectName}", 40f, y, projTitlePaint)
-            val projectsWidthWithBullet = projTitlePaint.measureText("• ${proj.projectName}")
-            canvas.drawText(
-                " (${proj.technology})",
-                40f + projectsWidthWithBullet,
-                y,
-                Paint(textPaint).apply { textSize = 12f; color = Color.DKGRAY })
-            y += 16f
-            y = drawMultiLine(canvas, proj.description, 55f, y, pageWidth - 90, textPaint)
-            y += 10f
-        }
-//        y += 10f
-        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-        y += 20f
-    }
+    y += 18f
 
     // -------- CERTIFICATIONS SECTION ----------
     if (resume.certificate.any { it.topic.isNotBlank() }) {
         canvas.drawText("CERTIFICATIONS", 40f, y, headerPaint)
-        y += 20f
+        y += 16f
         resume.certificate.forEach { cert ->
-            canvas.drawText("• ${cert.topic}", 40f, y, textPaint)
-//            canvas.drawText(cert.startMonthYear, (pageWidth - 40).toFloat(), y, datePaint)
-            canvas.drawText(
-                "${cert.startMonthYear} - ${cert.endMonthYear}",
-                (pageWidth - 40).toFloat(),
-                y,
-                datePaint
-            )
-            y += 16f
-            canvas.drawText(
-                cert.association,
-                55f,
-                y,
-                Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
-            y += 18f
-        }
-//        y += 5f
-        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-        y += 20f
-    }
-
-    // -------- Skills Section ----------
-    canvas.drawText("KEY SKILLS", 40f, y, headerPaint)
-    y += 20f
-
-//    val skillPaint = Paint(textPaint).apply { color = Color.GRAY; textSize = 11f }
-//    val columnWidth = (pageWidth - 80) / 3f
-//
-//    var currentColumn = 0
-//    val startX = 45f
-//
-//    resume.skills.forEach { sk ->
-//        if (sk.skill.isNotBlank()) {
-//            canvas.drawText("• ${sk.skill}", startX + (currentColumn * columnWidth), y, skillPaint)
-//            currentColumn++
-//            if (currentColumn >= 3) {
-//                currentColumn = 0
-//                y += 18f
-//            }
-//        }
-//    }
-//    if (currentColumn != 0) y += 18f
-
-//    y += 10f
-//
-    val skillPaint = Paint(textPaint).apply { color = Color.GRAY; textSize = 11f }
-    val columnWidth = (pageWidth - 80) / 3f
-
-    var currentColumn = 0
-    val startX = 45f
-
-    resume.skills.forEach { sk ->
-        if (sk.skill.isNotBlank()) {
-            canvas.drawText(
-                "• Tech Skill: ",
-                startX + (currentColumn * columnWidth),
-                y,
-                headerPaint
-            )
-            canvas.drawText(" ${sk.skill}", 120f, y, textPaint)
-            y += 10f
-//            canvas.drawText("• Soft Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
-
-//            currentColumn++
-//            if (currentColumn >= 3) {
-//                currentColumn = 0
-//                y += 18f
-//            }
-            y += 8f
+            canvas.drawText("• ${cert.topic} — ${cert.association}", 40f, y, textPaint)
+            canvas.drawText("${cert.startMonthYear} - ${cert.endMonthYear}", (pageWidth - 40).toFloat(), y, datePaint)
+            y += 14f
         }
     }
-    resume.skills2.forEach { sk ->
-        if (sk.skill2.isNotBlank()) {
-//            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
-//            y+=10f
-            canvas.drawText(
-                "• Soft Skill: ",
-                startX + (currentColumn * columnWidth),
-                y,
-                headerPaint
-            )
-            canvas.drawText(
-                "${sk.skill2}", /*startX + (currentColumn * columnWidth)*/
-                120f,
-                y,
-                textPaint
-            )
-            y += 10f
-//            currentColumn++
-//            if (currentColumn >= 3) {
-//                currentColumn = 0
-//                y += 18f
-//            }
-            y += 8f
-        }
-    }
-    resume.skills3.forEach { sk ->
-        if (sk.skill3.isNotBlank()) {
-//            canvas.drawText("• Tech Skill: ", startX + (currentColumn * columnWidth), y, headerPaint)
-//            y+=10f
-            canvas.drawText("• Language:  ", startX + (currentColumn * columnWidth), y, headerPaint)
-            canvas.drawText(
-                "${sk.skill3}", /*startX + (currentColumn * columnWidth)*/
-                120f,
-                y,
-                textPaint
-            )
-
-            currentColumn++
-            if (currentColumn >= 3) {
-                currentColumn = 0
-                y += 18f
-            }
-        }
-    }
-//    if (currentColumn != 0) y += 18f
-
-    y += 10f
-
-
-    canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-    y += 20f
-
-
-// -------- ACHIEVEMENT SECTION ----------
-    if (resume.achievements.any { it.achievements.isNotBlank() }) {
-        canvas.drawText("Co Curricular Activities", 40f, y, headerPaint)
-        y += 20f
-        resume.achievements.forEach { ach ->
-            canvas.drawText("• ${ach.achievements}", 40f, y, textPaint)
-//        canvas.drawText(ach.achievements, (pageWidth - 40).toFloat(), y, datePaint)
-            y += 16f
-            canvas.drawText(
-                ach.description,
-                55f,
-                y,
-                Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
-            y += 18f
-        }
-//        y += 5f
-        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-        y += 20f
-    }
-
-//
-//    if (resume.achievements.any { it.achievements.isNotBlank() }) {
-//    canvas.drawText("Extra Curricular Activities", 40f, y, headerPaint)
-//    y += 20f
-//    resume.achievements.forEach { ach ->
-//        canvas.drawText("• ${ach.achievements}", 40f, y, textPaint)
-////        canvas.drawText(ach.achievements, (pageWidth - 40).toFloat(), y, datePaint)
-//        y += 16f
-//        canvas.drawText(ach.description, 55f, y, Paint(textPaint).apply { textSize = 11f; color = Color.DKGRAY })
-//        y += 18f
-//    }
-////        y += 5f
-//    canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-//    y += 20f
-//}
-    // -------- LANGUAGES SECTION ----------
-//    canvas.drawText("LANGUAGE", 40f, y, headerPaint)
-//    y += 20f
-//
-//    var currentLangColumn = 0
-//    resume.language.forEach { lng ->
-//        if (lng.language.isNotBlank()) {
-//            canvas.drawText("• ${lng.language}", startX + (currentLangColumn * columnWidth), y, skillPaint)
-//            currentLangColumn++
-//            if (currentLangColumn >= 3) {
-//                currentLangColumn = 0
-//                y += 18f
-//            }
-//        }
-//    }
 }
 
 private fun drawMultiLine(
@@ -471,7 +244,7 @@ private fun drawMultiLine(
         val trial = if (line.isEmpty()) w else "$line $w"
         if (paint.measureText(trial) > maxWidth) {
             canvas.drawText(line, x, y, paint)
-            y += 16f
+            y += 14f
             line = w
         } else {
             line = trial
@@ -479,74 +252,7 @@ private fun drawMultiLine(
     }
     if (line.isNotEmpty()) {
         canvas.drawText(line, x, y, paint)
-        y += 16f
+        y += 14f
     }
     return y
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ResumePDFPreview() {
-    val sampleData = ResumeData(
-        personal = PersonalDetails(
-            name = "",
-            email = "",
-            phone = "",
-            location = "",
-            githublink = "",
-            linkedinlink = ""
-        ),
-        career = CareerObjective(careerDescription = ""),
-        skills = listOf(Skills("")),
-        skills2 = listOf(Skills2("")),
-        skills3 = listOf(Skills3(" ")),
-        school10Education = School10Education(" ", "", "", "", ""),
-        school12Education = School12Education("", "", "", "", ""),
-        achievements = listOf(Achievements("", ""), Achievements("", "")),
-        higherEducation = listOf(HigherEducation("", "", "", "", "")),
-        certificate = listOf(
-            Certificates("", "", ""), Certificates("", "", ""),
-            Certificates("", "", "")
-        ),
-        language = listOf(Language(""), Language(""), Language("")),
-        experience = listOf(Experience("", "", "", "", "")),
-        projects = listOf(Project("", "", ""), Project("", "", ""))
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        ComposeCanvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .aspectRatio(PAGE_WIDTH.toFloat() / PAGE_HEIGHT)
-        ) {
-            drawIntoCanvas { canvas ->
-                // Scale the canvas to fit the preview area
-                val scale = size.width / PAGE_WIDTH
-                canvas.nativeCanvas.scale(scale, scale)
-
-                // Draw white background
-                val bgPaint = Paint().apply { color = Color.WHITE }
-                canvas.nativeCanvas.drawRect(
-                    0f,
-                    0f,
-                    PAGE_WIDTH.toFloat(),
-                    PAGE_HEIGHT.toFloat(),
-                    bgPaint
-                )
-
-                drawResumeContent(canvas.nativeCanvas, sampleData, null)
-            }
-        }
-    }
-}
-/*
-*
-*
-*
-*
-*
-* */
