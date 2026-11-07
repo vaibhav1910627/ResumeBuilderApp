@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -38,7 +40,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeTopAppBar
 //import androidx.wear.compose.foundation.weight
@@ -62,6 +69,7 @@ fun ExperienceScreen(
 
 
     val textColor = MaterialTheme.colorScheme.onBackground
+    val focusManager = LocalFocusManager.current
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
@@ -119,6 +127,14 @@ fun ExperienceScreen(
                             value = exp.company, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null, null, null, null) },
                             label = { Text("Company") },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -127,6 +143,14 @@ fun ExperienceScreen(
                             value = exp.role, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it, null, null, null) },
                             label = { Text("Role") },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )
@@ -164,6 +188,14 @@ fun ExperienceScreen(
                                     )
                                 },
                                 label = { Text("Responsibilities") },
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Next
+                                ),
+
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                ),
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
@@ -213,6 +245,7 @@ fun DateFieldWithPicker(
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
+    val focusManager = LocalFocusManager.current
 
     // Date Picker Dialog
     if (showDatePicker) {
@@ -240,6 +273,14 @@ fun DateFieldWithPicker(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Words,
+            imeAction = ImeAction.Next
+        ),
+
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+        ),
         modifier = modifier,
         colors = textFieldColors,
         shape = RoundedCornerShape(16.dp),

@@ -37,6 +37,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeTopAppBar
@@ -134,7 +135,9 @@ fun CertificateScreen(
                                 )
                             },
                             label = { Text("Association") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             ),
@@ -213,7 +216,9 @@ fun CertificateScreen(
                                     )
                                 },
                                 label = { Text("Topic") },
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
                                     onDone = { focusManager.clearFocus()
                                     onAdd()

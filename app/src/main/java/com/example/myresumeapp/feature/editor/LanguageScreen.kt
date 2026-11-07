@@ -32,6 +32,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeTopAppBar
@@ -114,7 +115,9 @@ fun LanguageScreen(
                             value = lang.language, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, it, null) },
                             label = { Text("Language") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next ),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next ),
                             keyboardActions = KeyboardActions(
                                 onNext = {
                                     focusManager.moveFocus(FocusDirection.Next)
@@ -131,6 +134,7 @@ fun LanguageScreen(
                             },
                             label = {Text("Proficiency (e.g. Native, Fluent, B2, A2)")},
                             keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
                                 imeAction = ImeAction.Done
                             ),
                             keyboardActions = KeyboardActions(

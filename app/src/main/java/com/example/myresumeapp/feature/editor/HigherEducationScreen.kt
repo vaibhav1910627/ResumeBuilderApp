@@ -32,6 +32,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -114,7 +115,8 @@ fun HigherEducationScreen(
                             value = qual.degree, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null, null, null, null) },
                             label = { Text("Degree") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions{
                                 focusManager.moveFocus(
                                     FocusDirection.Next
@@ -128,7 +130,8 @@ fun HigherEducationScreen(
                             value = qual.institution, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it, null, null, null) },
                             label = { Text("Institution") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions{
                                 focusManager.moveFocus(
                                     FocusDirection.Next
@@ -163,6 +166,7 @@ fun HigherEducationScreen(
                                 label = { Text("Start Year") },
                                keyboardOptions = KeyboardOptions(
                                    keyboardType = KeyboardType.Number,
+                                   capitalization = KeyboardCapitalization.Words,
                                    imeAction = ImeAction.Next
                                ),
                                keyboardActions = KeyboardActions(
@@ -194,6 +198,7 @@ fun HigherEducationScreen(
                                 },
                                 label = { Text("End Year") },
                                 keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
                                     keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Next
                                 ),
@@ -225,6 +230,7 @@ fun HigherEducationScreen(
                                 },
                                 label = { Text("CGPA") },
                                 keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
                                     keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Done
                                 ),

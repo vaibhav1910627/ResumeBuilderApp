@@ -30,6 +30,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.UiState
@@ -107,7 +108,8 @@ fun AchievementScreen(
                             value = ach.achievements, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null) },
                             label = { Text("Achievements") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = {
                                     focusManager.moveFocus(FocusDirection.Next)
@@ -121,7 +123,9 @@ fun AchievementScreen(
                             value = ach.description, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it) },
                             label = { Text("Description") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
                                 onDone = {
                                     focusManager.clearFocus()

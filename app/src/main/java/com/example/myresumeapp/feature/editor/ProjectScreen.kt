@@ -32,6 +32,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeTopAppBar
 //import androidx.wear.compose.foundation.weight
@@ -111,7 +112,8 @@ fun ProjectScreen(
                             value = pro.projectName, // FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(index, it, null, null) },
                             label = { Text("Project Name") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             ),
@@ -123,7 +125,8 @@ fun ProjectScreen(
                             value = pro.technology, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(index, null, it, null) },
                             label = { Text("Technology") },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(onNext = {
                                 focusManager.moveFocus(FocusDirection.Next)
                             }
@@ -147,7 +150,8 @@ fun ProjectScreen(
                                     )
                                 },
                                 label = { Text("Description") },
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                                keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(
                                     onDone = {
                                         focusManager.clearFocus()

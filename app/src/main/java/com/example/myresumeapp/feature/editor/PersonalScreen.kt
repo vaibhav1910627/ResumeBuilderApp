@@ -35,6 +35,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.myresumeapp.R
@@ -128,7 +129,8 @@ fun PersonalScreen(
                     value = uiState.resume.personal.name,
                     onValueChange = { onFieldChange(it, null, null, null, null, null) },
                     label = { Text("Name") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
@@ -142,7 +144,8 @@ fun PersonalScreen(
                     value = uiState.resume.personal.email,
                     onValueChange = { onFieldChange(null, it, null, null, null, null) },
                     label = { Text("Email") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
@@ -160,7 +163,8 @@ fun PersonalScreen(
                         }
                     },
                     label = { Text("Phone") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
@@ -178,7 +182,8 @@ fun PersonalScreen(
                         onFieldChange(null, null, null, newValue, null, null)
                     },
                     label = { Text("GitHub (Optional)") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
@@ -202,7 +207,8 @@ fun PersonalScreen(
                         onFieldChange(null, null, null, null, newValue, null)
                     },
                     label = { Text("LinkedIn (Optional)") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
@@ -224,7 +230,8 @@ fun PersonalScreen(
                     value = uiState.resume.personal.location,
                     onValueChange = { onFieldChange(null, null, null, null, null, it) },
                     label = { Text("Location") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()

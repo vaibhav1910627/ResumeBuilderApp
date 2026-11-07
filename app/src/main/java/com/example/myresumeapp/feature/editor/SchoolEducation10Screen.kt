@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,7 +27,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeTopAppBar
 //import androidx.wear.compose.foundation.weight
@@ -53,6 +59,7 @@ fun SchoolEducation10Screen(
 ) {
 
     val textColor = MaterialTheme.colorScheme.onBackground
+    val focusManager = LocalFocusManager.current
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
@@ -106,6 +113,14 @@ fun SchoolEducation10Screen(
                             value = edu1.school10 ,// FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(it, null, null, null, null) },
                             label = { Text("School Name") },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -114,6 +129,14 @@ fun SchoolEducation10Screen(
                             value = edu1.board10, // FIXED: Use 'qual'
                             onValueChange = { onFieldChange(null, it, null, null, null) },
                             label = { Text("Board") },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )
@@ -140,6 +163,14 @@ fun SchoolEducation10Screen(
                                     )
                                 },
                                 label = { Text("Start Year") },
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Next
+                                ),
+
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
@@ -161,6 +192,14 @@ fun SchoolEducation10Screen(
                                     )
                                 },
                                 label = { Text("End Year") },
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Next
+                                ),
+
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
@@ -183,6 +222,14 @@ fun SchoolEducation10Screen(
                                     )
                                 },
                                 label = { Text("Percentage") },
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Words,
+                                    imeAction = ImeAction.Done
+                                ),
+
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.clearFocus() }
+                                ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
