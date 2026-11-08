@@ -16,6 +16,8 @@ data class PersonalDetails(
     val name: String = "",
     val email: String = "",
     val phone: String = "",
+    val country: String = "",
+    val countryCode: String = "+91",
     val location: String = "",
     val photoUrl: String = "",
     val githublink: String = "",

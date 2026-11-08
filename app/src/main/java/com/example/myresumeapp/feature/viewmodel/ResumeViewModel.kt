@@ -64,6 +64,8 @@ class ResumeViewModel @Inject constructor (
         name: String?,
         email: String?,
         phone: String?,
+        country: String?,
+        countryCode: String?,
         githublink: String?,
         linkedlink: String?,
         location: String?
@@ -75,6 +77,7 @@ class ResumeViewModel @Inject constructor (
                     name = name ?: currentResume.personal.name,
                     email = email ?: currentResume.personal.email,
                     phone = phone ?: currentResume.personal.phone,
+                    country = country ?: currentResume.personal.country,
                     githublink = githublink ?: currentResume.personal.githublink,
                     linkedinlink = linkedlink ?: currentResume.personal.linkedinlink,
                     location = location ?: currentResume.personal.location

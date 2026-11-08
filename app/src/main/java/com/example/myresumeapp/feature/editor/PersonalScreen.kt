@@ -3,6 +3,7 @@ package com.example.myresumeapp.feature.editor
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -28,6 +31,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +48,7 @@ import coil.compose.AsyncImage
 import com.example.myresumeapp.R
 import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.UiState
+import com.google.gson.annotations.Expose
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +57,7 @@ fun PersonalScreen(
     uiState: UiState,
     onNext: () -> Unit,
     onPhotoPicked: (Uri?) -> Unit,
-    onFieldChange: (name: String?, email: String?, phone: String?, github: String?, linkedin: String?, location: String?) -> Unit
+    onFieldChange: (name: String?, email: String?, phone: String?, country: String?, countryCode: String?, github: String?, linkedin: String?, location: String?) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val pickPhoto =
@@ -127,7 +135,7 @@ fun PersonalScreen(
             item {
                 OutlinedTextField(
                     value = uiState.resume.personal.name,
-                    onValueChange = { onFieldChange(it, null, null, null, null, null) },
+                    onValueChange = { onFieldChange(it, null, null, null,null, null ,null, null) },
                     label = { Text("Name") },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next),
@@ -142,7 +150,7 @@ fun PersonalScreen(
             item {
                 OutlinedTextField(
                     value = uiState.resume.personal.email,
-                    onValueChange = { onFieldChange(null, it, null, null, null, null) },
+                    onValueChange = { onFieldChange(null, it, null, null,null,null, null, null) },
                     label = { Text("Email") },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next),
@@ -159,10 +167,11 @@ fun PersonalScreen(
                     value = uiState.resume.personal.phone,
                     onValueChange = { newValue ->
                         if (newValue.all { it.isDigit() }) {
-                            onFieldChange(null, null, newValue, null, null, null)
+                            onFieldChange(null, null, newValue, null, null, null, null, null)
                         }
                     },
                     label = { Text("Phone") },
+                    prefix = {Text("${uiState.resume.personal.countryCode} ") },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
@@ -179,7 +188,7 @@ fun PersonalScreen(
                 OutlinedTextField(
                     value = uiState.resume.personal.githublink ?: "",
                     onValueChange = { newValue ->
-                        onFieldChange(null, null, null, newValue, null, null)
+                        onFieldChange(null, null, null, null, null,newValue, null, null)
                     },
                     label = { Text("GitHub (Optional)") },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
@@ -204,7 +213,7 @@ fun PersonalScreen(
                 OutlinedTextField(
                     value = uiState.resume.personal.linkedinlink ?: "",
                     onValueChange = { newValue ->
-                        onFieldChange(null, null, null, null, newValue, null)
+                        onFieldChange(null, null, null, null, null, null, newValue, null)
                     },
                     label = { Text("LinkedIn (Optional)") },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
@@ -228,7 +237,7 @@ fun PersonalScreen(
             item {
                 OutlinedTextField(
                     value = uiState.resume.personal.location,
-                    onValueChange = { onFieldChange(null, null, null, null, null, it) },
+                    onValueChange = { onFieldChange(null, null, null, null, null, null , null, it) },
                     label = { Text("Location") },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Done),
@@ -265,4 +274,81 @@ fun PersonalScreen(
             }
         }
     }
+}
+
+data class CountryInfo(val name: String, val code: String)
+
+val popularCountries = listOf(
+    CountryInfo("India", "+91"),
+    CountryInfo("United States", "+1"),
+    CountryInfo("United Kingdom", "+44"),
+    CountryInfo("Canada", "+1"),
+    CountryInfo("Australia", "+61"),
+    CountryInfo("Germany", "+49"),
+    CountryInfo("France", "+33"),
+    CountryInfo("Japan", "+81"),
+    CountryInfo("China", "+86"),
+    CountryInfo("Brazil", "+55"),
+    CountryInfo("Italy", "+39"),
+    CountryInfo("Spain", "+34")
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CountryAutocompleteField(
+    selectedCountry: String,
+    selectedCode: String,
+    onCountrySelected: (String, String) -> Unit,
+    textFieldColors: androidx.compose.material3.TextFieldColors
+
+
+) {
+    var query by remember { mutableStateOf(selectedCountry.ifEmpty { selectedCode }) }
+    var expanded by remember {mutableStateOf(false)}
+
+    var filteredCountries = popularCountries.filter {
+        it.name.contains(query, ignoreCase = true) || it.code.contains(query, ignoreCase = true)
+
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded && filteredCountries.isNotEmpty(),
+        onExpandedChange = {expanded=it},
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+
+            value = query,
+            onValueChange = {
+                query = it
+                expanded = true
+            },
+            label = {Text("Country / Country Code(e.g. India or +91") },
+            modifier = Modifier
+                .fillMaxWidth()
+            .menuAnchor(),
+            shape = RoundedCornerShape(16.dp),
+            colors = textFieldColors,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Next)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded && filteredCountries.isNotEmpty(),
+            onDismissRequest = {expanded = false},
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp) )
+        ) {
+            filteredCountries.forEach { country ->
+                DropdownMenuItem(
+                    text = { Text("${country.name} (${country.code}")},
+                    onClick = {
+                        query = "${country.name} (${country.code})"
+                        onCountrySelected(country.name, country.code)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+
 }
