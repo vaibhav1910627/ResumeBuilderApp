@@ -407,9 +407,9 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
 //        currentschool12Qualifications[index] = school12qualificationToUpdate.copy(*/
 
 
-    fun addSkill() {
+    fun addSkill(initialSkill: String = "") {
         val currentList = internalUiState.value.resume.skills.toMutableList()
-        currentList.add(Skills())
+        currentList.add(Skills(skill = initialSkill))
 
         internalUiState.value = internalUiState.value.copy(
             resume = internalUiState.value.resume.copy(

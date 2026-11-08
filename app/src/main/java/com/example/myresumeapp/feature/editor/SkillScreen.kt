@@ -97,7 +97,8 @@ fun SmartSkillInputSection(
                     ExposedDropdownMenu(
                         expanded = expanded && filteredSkills.isNotEmpty()
                                 && textInput.isNotBlank(),
-                        onDismissRequest = {expanded = false}
+                        onDismissRequest = {expanded = false},
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
                     ) {
                         filteredSkills.forEach {
                             suggestion ->
@@ -133,7 +134,8 @@ fun SmartSkillInputSection(
             }
         }
             if(skillsList.isNotEmpty() && skillsList.any {it.skill.isNotBlank()}) {
-                FlowRow(modifier = Modifier.fillMaxWidth(),
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     skillsList.forEachIndexed { index, skl ->
@@ -143,7 +145,8 @@ fun SmartSkillInputSection(
                                 onClick = {},
                                 label = {Text(skl.skill)},
                                 trailingIcon = {
-                                    Icon(imageVector = Icons.Default.Close,
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
                                         contentDescription = "Remove Skill",
                                         modifier = Modifier
                                             .size(16.dp)
@@ -165,7 +168,7 @@ fun SkillScreen(
     uiState: UiState,
     onPrev: () -> Unit,
     onNext: () -> Unit,
-    onAdd: () -> Unit,
+    onAdd: (String) -> Unit,
     onRemove: (Int) -> Unit,
     // Add 'index: Int' to the signature
     onFieldChange: (index: Int, skills: String?) -> Unit,
@@ -208,7 +211,7 @@ fun SkillScreen(
                 SmartSkillInputSection(
                     uiState.resume.skills,
                     onAddSkill = { newSkill ->
-                        onAdd()
+                        onAdd(newSkill)
                     },
                     onRemoveSkill = { index ->
                         onRemove(index)
