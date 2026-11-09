@@ -60,6 +60,13 @@ fun PersonalScreen(
     onFieldChange: (name: String?, email: String?, phone: String?, country: String?, countryCode: String?, github: String?, linkedin: String?, location: String?) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    val isEmailValid = isValidEmail(uiState.resume.personal.email)
+    val isPhoneValid = uiState.resume.personal.phone.length in 7..15 && uiState.resume.personal.phone.all {it.isDigit()}
+    val isFormValid = uiState.resume.personal.name.isNotBlank() && isEmailValid && isPhoneValid
     val pickPhoto =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             onPhotoPicked(uri)
@@ -152,6 +159,12 @@ fun PersonalScreen(
                     value = uiState.resume.personal.email,
                     onValueChange = { onFieldChange(null, it, null, null,null,null, null, null) },
                     label = { Text("Email") },
+                    isError = uiState.resume.personal.email.isNotBlank() && !isEmailValid,
+                    supportingText = {
+                        if (uiState.resume.personal.email.isNotBlank() && !isEmailValid) {
+                            Text("Please enter a valid email address (e.g. name@example.com)", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
@@ -172,6 +185,12 @@ fun PersonalScreen(
                     },
                     label = { Text("Phone") },
                     prefix = {Text("${uiState.resume.personal.countryCode} ") },
+                    isError = uiState.resume.personal.phone.isNotBlank() && !isPhoneValid,
+                    supportingText = {
+                        if (uiState.resume.personal.phone.isNotBlank() && !isPhoneValid) {
+                            Text("Enter a valid phone number (7 to 15 digits)", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
@@ -352,3 +371,4 @@ fun CountryAutocompleteField(
     }
 
 }
+
