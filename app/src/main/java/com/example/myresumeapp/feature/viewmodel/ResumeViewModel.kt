@@ -78,6 +78,7 @@ class ResumeViewModel @Inject constructor (
                     email = email ?: currentResume.personal.email,
                     phone = phone ?: currentResume.personal.phone,
                     country = country ?: currentResume.personal.country,
+                    countryCode = countryCode ?: currentResume.personal.countryCode,
                     githublink = githublink ?: currentResume.personal.githublink,
                     linkedinlink = linkedlink ?: currentResume.personal.linkedinlink,
                     location = location ?: currentResume.personal.location

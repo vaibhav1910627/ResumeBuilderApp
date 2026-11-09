@@ -63,9 +63,18 @@ fun PersonalScreen(
     fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+    val selectedCountryInfo = allCountriesList.find { it.code == uiState.resume.personal.countryCode }
+    val minLength = selectedCountryInfo?.minLength ?: 7
+    val maxLength = selectedCountryInfo?.maxLength ?: 15
+
+    val phoneErrorText = if (minLength == maxLength) {
+        "Must be exactly $minLength digits"
+    } else {
+        "Must be between $minLength and $maxLength digits"
+    }
 
     val isEmailValid = isValidEmail(uiState.resume.personal.email)
-    val isPhoneValid = uiState.resume.personal.phone.length in 7..15 && uiState.resume.personal.phone.all {it.isDigit()}
+    val isPhoneValid = uiState.resume.personal.phone.length in minLength..maxLength && uiState.resume.personal.phone.all {it.isDigit()}
     val isFormValid = uiState.resume.personal.name.isNotBlank() && isEmailValid && isPhoneValid
     val pickPhoto =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -154,6 +163,19 @@ fun PersonalScreen(
                     colors = textFieldColors
                 )
             }
+
+            // Country Autocomplete Picker
+            item {
+                CountryAutocompleteField(
+                    selectedCountry = uiState.resume.personal.country,
+                    selectedCode = uiState.resume.personal.countryCode,
+                    onCountrySelected = { name, code ->
+                        onFieldChange(null, null, null, name, code, null, null, null)
+                    },
+                    textFieldColors = textFieldColors
+                )
+            }
+
             item {
                 OutlinedTextField(
                     value = uiState.resume.personal.email,
@@ -179,7 +201,7 @@ fun PersonalScreen(
                 OutlinedTextField(
                     value = uiState.resume.personal.phone,
                     onValueChange = { newValue ->
-                        if (newValue.all { it.isDigit() }) {
+                        if (newValue.all { it.isDigit() } && newValue.length <= maxLength) {
                             onFieldChange(null, null, newValue, null, null, null, null, null)
                         }
                     },
@@ -188,7 +210,9 @@ fun PersonalScreen(
                     isError = uiState.resume.personal.phone.isNotBlank() && !isPhoneValid,
                     supportingText = {
                         if (uiState.resume.personal.phone.isNotBlank() && !isPhoneValid) {
-                            Text("Enter a valid phone number (7 to 15 digits)", color = MaterialTheme.colorScheme.error)
+                            Text(
+                               phoneErrorText,
+                                color = MaterialTheme.colorScheme.error)
                         }
                     },
                     keyboardOptions = KeyboardOptions( capitalization = KeyboardCapitalization.Words,
@@ -295,21 +319,59 @@ fun PersonalScreen(
     }
 }
 
-data class CountryInfo(val name: String, val code: String)
+data class CountryInfo(val name: String, val code: String, val minLength: Int, val maxLength: Int)
 
-val popularCountries = listOf(
-    CountryInfo("India", "+91"),
-    CountryInfo("United States", "+1"),
-    CountryInfo("United Kingdom", "+44"),
-    CountryInfo("Canada", "+1"),
-    CountryInfo("Australia", "+61"),
-    CountryInfo("Germany", "+49"),
-    CountryInfo("France", "+33"),
-    CountryInfo("Japan", "+81"),
-    CountryInfo("China", "+86"),
-    CountryInfo("Brazil", "+55"),
-    CountryInfo("Italy", "+39"),
-    CountryInfo("Spain", "+34")
+val allCountriesList = listOf(
+    CountryInfo("Afghanistan", "+93", 9, 9),
+    CountryInfo("Albania", "+355", 8, 9),
+    CountryInfo("Algeria", "+213", 9, 9),
+    CountryInfo("Argentina", "+54", 10, 10),
+    CountryInfo("Australia", "+61", 9, 9),
+    CountryInfo("Austria", "+43", 10, 13),
+    CountryInfo("Bangladesh", "+880", 10, 10),
+    CountryInfo("Belgium", "+32", 9, 9),
+    CountryInfo("Brazil", "+55", 10, 11),
+    CountryInfo("Canada", "+1", 10, 10),
+    CountryInfo("China", "+86", 11, 11),
+    CountryInfo("Colombia", "+57", 10, 10),
+    CountryInfo("Egypt", "+20", 10, 10),
+    CountryInfo("France", "+33", 9, 9),
+    CountryInfo("Germany", "+49", 10, 11),
+    CountryInfo("Greece", "+30", 10, 10),
+    CountryInfo("Hong Kong", "+852", 8, 8),
+    CountryInfo("India", "+91", 10, 10),
+    CountryInfo("Indonesia", "+62", 9, 12),
+    CountryInfo("Iran", "+98", 10, 10),
+    CountryInfo("Iraq", "+964", 10, 10),
+    CountryInfo("Ireland", "+353", 9, 9),
+    CountryInfo("Israel", "+972", 9, 9),
+    CountryInfo("Italy", "+39", 9, 10),
+    CountryInfo("Japan", "+81", 10, 10),
+    CountryInfo("Malaysia", "+60", 9, 10),
+    CountryInfo("Mexico", "+52", 10, 10),
+    CountryInfo("Netherlands", "+31", 9, 9),
+    CountryInfo("New Zealand", "+64", 8, 10),
+    CountryInfo("Nigeria", "+234", 10, 10),
+    CountryInfo("Pakistan", "+92", 10, 10),
+    CountryInfo("Philippines", "+63", 10, 10),
+    CountryInfo("Poland", "+48", 9, 9),
+    CountryInfo("Portugal", "+351", 9, 9),
+    CountryInfo("Russia", "+7", 10, 10),
+    CountryInfo("Saudi Arabia", "+966", 9, 9),
+    CountryInfo("Singapore", "+65", 8, 8),
+    CountryInfo("South Africa", "+27", 9, 9),
+    CountryInfo("South Korea", "+82", 9, 10),
+    CountryInfo("Spain", "+34", 9, 9),
+    CountryInfo("Sweden", "+46", 9, 9),
+    CountryInfo("Switzerland", "+41", 9, 9),
+    CountryInfo("Taiwan", "+886", 9, 9),
+    CountryInfo("Thailand", "+66", 9, 9),
+    CountryInfo("Turkey", "+90", 10, 10),
+    CountryInfo("Ukraine", "+380", 9, 9),
+    CountryInfo("United Arab Emirates", "+971", 9, 9),
+    CountryInfo("United Kingdom", "+44", 10, 10),
+    CountryInfo("United States", "+1", 10, 10),
+    CountryInfo("Vietnam", "+84", 9, 10)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -322,10 +384,10 @@ fun CountryAutocompleteField(
 
 
 ) {
-    var query by remember { mutableStateOf(selectedCountry.ifEmpty { selectedCode }) }
+    var query by remember(selectedCountry, selectedCode) { mutableStateOf(if (selectedCountry.isNotEmpty()) "$selectedCountry  ($selectedCode)" else selectedCode)}
     var expanded by remember {mutableStateOf(false)}
 
-    var filteredCountries = popularCountries.filter {
+    var filteredCountries = allCountriesList.filter {
         it.name.contains(query, ignoreCase = true) || it.code.contains(query, ignoreCase = true)
 
     }
