@@ -48,9 +48,13 @@ fun PreviewScreen(
         focusedLabelColor = MaterialTheme.colorScheme.primary,
         cursorColor = MaterialTheme.colorScheme.primary
     )
-
+    val context = androidx.compose.ui.platform.LocalContext.current
     val createPDF = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) {
-        uri->onDownloadPDF(uri)
+        uri->
+        if(uri != null) {
+            onDownloadPDF(uri)
+            sharePdfFile(context, uri)
+        }
     }
     val createImage = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) {
             uri -> onDownloadImage(uri)
@@ -111,4 +115,15 @@ fun PreviewScreen(
             }
         }
     }
+}
+
+fun sharePdfFile(context: android.content.Context, uri: Uri) {
+    val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+        type = "application/pdf"
+        putExtra(android.content.Intent.EXTRA_STREAM, uri)
+        addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    val chooser = android.content.Intent.createChooser(intent, "Share Resume PDF")
+    chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(chooser)
 }
