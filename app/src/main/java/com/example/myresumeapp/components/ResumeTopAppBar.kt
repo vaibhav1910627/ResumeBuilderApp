@@ -2,6 +2,7 @@ package com.example.myresumeapp.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -16,7 +17,8 @@ val LocalCoroutineScope = compositionLocalOf<CoroutineScope?> { null }
 @Composable
 fun ResumeTopAppBar(
     title: String,
-    onBack: (() -> Unit)? = null
+    onBack: (() -> Unit)? = null,
+    onPreviewClick: (() -> Unit)?= null
 ) {
     val drawerState = LocalDrawerState.current
     val scope = LocalCoroutineScope.current
@@ -38,7 +40,14 @@ fun ResumeTopAppBar(
             }
         },
         actions = {
-
+            if(onPreviewClick != null) {
+                IconButton(onClick = onPreviewClick) {
+                    Icon(
+                        imageVector = Icons.Default.Visibility,
+                        contentDescription = "Live Preview"
+                    )
+                }
+            }
             if (onBack != null) {
                 TextButton(onClick = onBack) {
                     Text("Back")
