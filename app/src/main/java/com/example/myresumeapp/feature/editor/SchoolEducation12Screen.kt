@@ -25,6 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -33,7 +37,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.foundation.layout.height
 import com.example.myresumeapp.data.model.UiState
 
 
@@ -53,6 +60,7 @@ fun SchoolEducation12Screen(
 
     val textColor = MaterialTheme.colorScheme.onBackground
     val focusManager = LocalFocusManager.current
+    var showLivePreview by remember { mutableStateOf(false) }
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
@@ -66,7 +74,8 @@ fun SchoolEducation12Screen(
         topBar = {
             ResumeTopAppBar(
                 title = "Senior Secondary Education",
-                onBack = onPrev
+                onBack = onPrev,
+                onPreviewClick = { showLivePreview = true }
             )
         }
     ) { paddingValues ->
@@ -213,6 +222,29 @@ fun SchoolEducation12Screen(
                     ) {
                         Text("Next", color = Color.White)
                     }
+                }
+            }
+        }
+
+        if (showLivePreview) {
+            ModalBottomSheet(
+                onDismissRequest = { showLivePreview = false }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Live Resume Preview", style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.height(16.dp))
+
+                    ResumeCard(
+                        resume = uiState.resume,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(24.dp))
                 }
             }
         }

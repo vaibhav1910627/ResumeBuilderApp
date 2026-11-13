@@ -26,6 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -36,7 +40,10 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.foundation.layout.height
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
 import com.example.myresumeapp.core.theme.MyResumeAppTheme
@@ -58,6 +65,7 @@ fun HigherEducationScreen(
     ) {
     val focusManager = LocalFocusManager.current
     val textColor = MaterialTheme.colorScheme.onBackground
+    var showLivePreview by remember { mutableStateOf(false) }
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
@@ -71,7 +79,8 @@ fun HigherEducationScreen(
         topBar = {
             ResumeTopAppBar(
                 title = "Academic Qualification",
-                onBack = onPrev
+                onBack = onPrev,
+                onPreviewClick = { showLivePreview = true }
             )
         }
     ) { paddingValues ->
@@ -275,6 +284,29 @@ fun HigherEducationScreen(
                     ) {
                         Text("Next", color = Color.White)
                     }
+                }
+            }
+        }
+
+        if (showLivePreview) {
+            ModalBottomSheet(
+                onDismissRequest = { showLivePreview = false }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Live Resume Preview", style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.height(16.dp))
+
+                    ResumeCard(
+                        resume = uiState.resume,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(24.dp))
                 }
             }
         }

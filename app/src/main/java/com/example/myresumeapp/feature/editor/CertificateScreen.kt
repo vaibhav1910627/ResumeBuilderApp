@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -20,6 +21,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.UiState
 import com.example.myresumeapp.core.theme.MyResumeAppTheme
@@ -75,12 +78,14 @@ fun CertificateScreen(
         focusedLabelColor = MaterialTheme.colorScheme.primary,
         cursorColor = MaterialTheme.colorScheme.primary
     )
+    var showLivePreview by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             ResumeTopAppBar(
                 title = "Certificate",
-                onBack = onPrev
+                onBack = onPrev,
+                onPreviewClick = {showLivePreview = true}
             )
         }
     ) { paddingValues ->
@@ -260,6 +265,32 @@ fun CertificateScreen(
                     ) {
                         Text("Next", color = Color.White)
                     }
+                }
+            }
+        }
+
+        if(showLivePreview) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showLivePreview = false
+                }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Live Resume Preview",style = MaterialTheme.typography.titleLarge)
+                    Spacer(Modifier.height(16.dp))
+
+                    ResumeCard(
+                        resume = uiState.resume,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(24.dp))
+
                 }
             }
         }
