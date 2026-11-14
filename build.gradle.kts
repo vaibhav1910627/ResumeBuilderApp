@@ -7,13 +7,3 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.52" apply false
     id("com.google.devtools.ksp") version "2.0.21-1.0.25" apply false
 }
-
-allprojects {
-    configurations.all {
-        resolutionStrategy.eachDependency {
-            if (requested.group == "org.jetbrains.kotlin") {
-                useVersion("2.0.21")
-            }
-        }
-    }
-}

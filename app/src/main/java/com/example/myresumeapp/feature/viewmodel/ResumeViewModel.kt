@@ -31,10 +31,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ResumeViewModel @Inject constructor (
-        application: Application,
+    application: Application,
     private val resumeRepository: ResumeRepository
 ): AndroidViewModel(application) {
-//    private val resumeRepository = ResumeRepository()
+    //    private val resumeRepository = ResumeRepository()
     private val internalUiState = mutableStateOf(UiState())
     val uiState: UiState get() = internalUiState.value
 
@@ -94,7 +94,8 @@ class ResumeViewModel @Inject constructor (
         internalUiState.value = internalUiState.value.copy(
             resume = currentCareerObjective.copy(
                 career = currentCareerObjective.career.copy(
-careerDescription = careerDescription ?: currentCareerObjective.career.careerDescription
+                    careerDescription = careerDescription
+                        ?: currentCareerObjective.career.careerDescription
                 )
             )
         )
@@ -444,7 +445,7 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
         val skillToUpdate = currentSkills[index]
 
         currentSkills[index] = skillToUpdate.copy(
-            skill = skill  ?: skillToUpdate.skill
+            skill = skill ?: skillToUpdate.skill
         )
 
         internalUiState.value = internalUiState.value.copy(
@@ -521,17 +522,17 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
 
 
     fun updateProject(
-    index: Int,
-    projecName: String?,
-    technology: String?,
-    description: String?
+        index: Int,
+        projecName: String?,
+        technology: String?,
+        description: String?
     ) {
 
         val currentProject = internalUiState.value.resume.projects.toMutableList()
         val projectToUpdate = currentProject[index]
 
         currentProject[index] = projectToUpdate.copy(
-            projectName = projecName  ?: projectToUpdate.projectName,
+            projectName = projecName ?: projectToUpdate.projectName,
             technology = technology ?: projectToUpdate.technology,
             description = description ?: projectToUpdate.description
         )
@@ -611,8 +612,6 @@ careerDescription = careerDescription ?: currentCareerObjective.career.careerDes
             )
         }
     }
-
-
 
 
     fun updateAchievement(

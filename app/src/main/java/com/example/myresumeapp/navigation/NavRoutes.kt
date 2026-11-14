@@ -1,13 +1,12 @@
 package com.example.myresumeapp.navigation
 
 import androidx.compose.material.icons.Icons.Default as Default
-import AchievementScreen
+import com.example.myresumeapp.feature.editor.AchievementScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.activity.compose.LocalActivityResultRegistryOwner.provides
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
+
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
@@ -54,9 +53,9 @@ import com.example.myresumeapp.feature.editor.ProjectScreen
 import com.example.myresumeapp.feature.editor.SchoolEducation10Screen
 import com.example.myresumeapp.feature.editor.SchoolEducation12Screen
 import com.example.myresumeapp.feature.auth.SignupScreen
+import com.example.myresumeapp.feature.editor.AchievementScreen
 import com.example.myresumeapp.feature.editor.SkillScreen
 import com.example.myresumeapp.feature.viewmodel.ResumeViewModel
-import com.google.rpc.Code
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
@@ -144,7 +143,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
     }
     if (showDrawer) {
         CompositionLocalProvider(
-                        LocalDrawerState provides drawerState,
+            LocalDrawerState provides drawerState,
             LocalCoroutineScope provides scope
         ) {
             ModalNavigationDrawer(
@@ -161,10 +160,10 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
 }
 
 @Composable
-    fun ResumeNavHost(
-        navController: NavHostController,
-        resumeViewModel: ResumeViewModel
-    )    {
+fun ResumeNavHost(
+    navController: NavHostController,
+    resumeViewModel: ResumeViewModel
+)    {
 
     NavHost(navController, startDestination = Routes.SIGNUP) {
         composable(Routes.SIGNUP) {

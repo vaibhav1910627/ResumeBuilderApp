@@ -25,20 +25,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToSignup: () -> Unit, onGuestLogin:() -> Unit) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onNavigateToSignup: () -> Unit,
+    onGuestLogin: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val textColor = MaterialTheme.colorScheme.onBackground
 
+    val textColor = MaterialTheme.colorScheme.onBackground
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = textColor,
         unfocusedTextColor = textColor,
         focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
 
     Scaffold { padding ->
@@ -50,7 +56,17 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToSignup: () -> Unit, onGu
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Welcome Back", style = MaterialTheme.typography.headlineLarge, color = textColor)
+            Text(
+                text = "Welcome Back",
+                style = MaterialTheme.typography.headlineLarge,
+                color = textColor
+            )
+            Text(
+                text = "Sign in to continue your resume",
+                style = MaterialTheme.typography.bodyMedium,
+                color = textColor.copy(alpha = 0.7f)
+            )
+
             Spacer(Modifier.height(32.dp))
 
             OutlinedTextField(
@@ -59,50 +75,45 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToSignup: () -> Unit, onGu
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = textFieldColors,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true
             )
+
             Spacer(Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 colors = textFieldColors,
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
-                // visualTransformation = PasswordVisualTransformation()
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true
             )
+
             Spacer(Modifier.height(24.dp))
 
             Button(
-                onClick = { /* Call ViewModel Login */ onLoginSuccess() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
-            ) {
-                Text("Login")
-            }
-
-            TextButton(onClick = onNavigateToSignup) {
-                Text("Don't have an account? Sign Up", color = MaterialTheme.colorScheme.primary)
-            }
-
-            Button(
-                onClick = {
-                    // Add validation logic here before success
-                    onGuestLogin()
-                },
+                onClick = onLoginSuccess,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(Color.Gray)
-//                enabled = name.isNotBlank() && email.isNotBlank() && password.length >= 6
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Guest",style = MaterialTheme.typography.headlineLarge, color = Color.White)
+                Text("Login", color = MaterialTheme.colorScheme.onPrimary)
             }
-            Text("We dont want your data")
+
+            Spacer(Modifier.height(16.dp))
+
+            TextButton(onClick = onNavigateToSignup) {
+                Text("Don't have an account? Sign up")
+            }
+
+            TextButton(onClick = onGuestLogin) {
+                Text("Continue as Guest", color = Color.Gray)
+            }
         }
     }
 }
