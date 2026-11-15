@@ -25,7 +25,7 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
         modifier = modifier,
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             Modifier.padding(16.dp),
@@ -42,15 +42,19 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
             Text(
                 resume.personal.name,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 "${resume.personal.email}*${resume.personal.phone}*${resume.personal.location}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+
             )
             Text(
                 "${resume.personal.githublink}*${resume.personal.linkedinlink}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
 
@@ -61,7 +65,8 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
             Text(
                 "Qualification",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             resume.higherEducation.forEach { qualification ->
@@ -77,7 +82,8 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
                     Text(
                         text = "${qualification.degree} . ${qualification.institution}",
                         modifier = Modifier.weight(1f), // Allow this to take space but not push the date off screen
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     // Right side: Date Range
@@ -85,7 +91,8 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
                         text = "${qualification.startYear} - ${qualification.endYear}",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
-                        color = Color.Gray // Optional: makes the date look cleaner
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+//                        color = Color.Gray // Optional: makes the date look cleaner
                     )
                 }
             }
@@ -101,17 +108,27 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
         HorizontalDivider()
         Spacer(Modifier.height(12.dp))
 
-
+Column(Modifier.padding(horizontal = 16.dp)) {
         Text(
             "Experience",
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
         )
         resume.experience.forEach { exp ->
-            Text("${exp.company} * ${exp.startMonthYear}-${exp.endMonthYear}")
-            Text(exp.role)
-            Text(exp.responsibilities.ifBlank { "Present" })
+            Spacer(Modifier.height(4.dp))
+            Text("${exp.company} * ${exp.startMonthYear}-${exp.endMonthYear}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+                )
+            Text(exp.role,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(exp.responsibilities.ifBlank { "Present" },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
-
+Spacer(Modifier.height(16.dp))
+}
 }
