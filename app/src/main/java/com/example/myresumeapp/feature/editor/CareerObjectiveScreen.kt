@@ -92,6 +92,8 @@ fun CareerObjectiveScreen(
 
             // Loop through the list of qualifications
             val car = uiState.resume.career
+            val wordCount = if (car.careerDescription.isBlank()) 0 else car.careerDescription.trim().split("\\s+".toRegex()).size
+            val isOverLimit = wordCount > 50
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -101,19 +103,35 @@ fun CareerObjectiveScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                         Text(
-                            "Not more than 50words ",
+                            "Career Objective Summary",
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Spacer(Modifier.weight(1f))
 
+                        Text(
+                            text = "$wordCount / 50 words",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (isOverLimit) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+//                        Spacer(Modifier.weight(1f))
 
+                    }
 
                         OutlinedTextField(
                             value = car.careerDescription,// FIXED: Use 'qual' from the loop
                             onValueChange = { onFieldChange(it) },
                             label = { Text("What's your objective") },
+                            isError = isOverLimit,
+                            supportingText = {
+                                if(isOverLimit) {
+                                    Text("Please keep your summary under 50 words.", color = MaterialTheme.colorScheme.error)
+                                }
+                            },
                             keyboardOptions = KeyboardOptions(
                                 capitalization = KeyboardCapitalization.Words,
                                 imeAction = ImeAction.Done),
@@ -121,7 +139,7 @@ fun CareerObjectiveScreen(
                                 onDone = {
 
                                     focusManager.clearFocus()
-                                    if (car.careerDescription.isNotBlank()) {
+                                    if (car.careerDescription.isNotBlank() && !isOverLimit) {
                                         onNext()
                                     }
                                 }

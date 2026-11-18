@@ -35,3 +35,5 @@ resume_template.xml
 /.idea/deviceManager.xml
 /.idea/compiler.xml
 /.idea/misc.xml
+.idea
+.idea/codeStyles
