@@ -121,16 +121,23 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             )
 
             navItems.forEach { (title, route, icon) ->
+                val isSelected = currentRoute == route
                 NavigationDrawerItem(
                     icon = {
                         Icon(icon, contentDescription = title)
                     },
                     label = { Text(title) },
-                    selected = currentRoute == route,
+                    selected = isSelected,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate(route) {
-                            popUpTo(Routes.PERSONAL)
+                        if(!isSelected) {
+                            navController.navigate(route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
                     },
                     modifier = androidx.compose.ui.Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
