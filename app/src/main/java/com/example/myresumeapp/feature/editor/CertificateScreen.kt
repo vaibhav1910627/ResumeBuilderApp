@@ -157,7 +157,7 @@ fun CertificateScreen(
                             checked = hasNoExpiry,
                             onCheckedChange = { isChecked ->
                                 hasNoExpiry = isChecked
-                                if (!isChecked) {
+                                if (isChecked) {
                                     onFieldChange(index, null, null, "", null)
 
                                 }
