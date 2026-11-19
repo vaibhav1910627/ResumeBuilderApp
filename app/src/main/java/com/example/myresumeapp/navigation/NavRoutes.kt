@@ -306,12 +306,15 @@ fun ResumeNavHost(
                 onDelete = {
                     resumeViewModel.deleteAll {
                         navController.popBackStack(Routes.PERSONAL, inclusive = false)
-                        navController.navigate(Routes.PERSONAL)
                     }
                 },
-                onSaveDatabase = resumeViewModel::saveFirebase,
-                onDownloadPDF = resumeViewModel::downloadPDF,
-                onDownloadImage = resumeViewModel::downloadImage
+                onSaveDatabase = { resumeViewModel.saveFirebase() },
+                onDownloadPDF = { uri -> resumeViewModel.downloadPDF(uri) },
+                onDownloadImage = { uri -> resumeViewModel.downloadImage(uri) },
+                onImportBackup = { uri -> resumeViewModel.importBackupJson(uri) },
+                onExportBackup = { uri -> resumeViewModel.exportBackupJson(uri) }
+//                        navController.navigate(Routes.PERSONAL)
+//
             )
         }
     }

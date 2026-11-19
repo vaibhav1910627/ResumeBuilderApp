@@ -101,6 +101,41 @@ class ResumeViewModel @Inject constructor (
         )
     }
 
+    fun exportBackupJson(uri: Uri?) {
+        if (uri == null) return
+        viewModelScope.launch(Dispatchers.IO) {
+            val context = getApplication<Application>()
+            val success = com.example.myresumeapp.core.utils.JsonBackupUtils.exportResumeToJson(context, internalUiState.value.resume, uri)
+            withContext(Dispatchers.Main) {
+                internalUiState.value = internalUiState.value.copy(
+                    message = if (success) "Backup exported successfully!" else "Failed to export backup"
+                )
+            }
+        }
+    }
+
+    fun importBackupJson(uri: Uri?) {
+        if (uri == null) return
+        viewModelScope.launch(Dispatchers.IO) {
+            val context = getApplication<Application>()
+            val importedResume = com.example.myresumeapp.core.utils.JsonBackupUtils.importResumeFromJson(context, uri)
+            withContext(Dispatchers.Main) {
+                if (importedResume != null) {
+                    internalUiState.value = internalUiState.value.copy(
+                        resume = importedResume,
+                        message = "Resume imported successfully!"
+                    )
+                    // Persist to local database
+                    saveFirebase()
+                } else {
+                    internalUiState.value = internalUiState.value.copy(
+                        message = "Invalid JSON backup file"
+                    )
+                }
+            }
+        }
+    }
+
 
 //    fun addQualification() {
 //        val currentList = internalUiState.value.resume.qualificationSkills

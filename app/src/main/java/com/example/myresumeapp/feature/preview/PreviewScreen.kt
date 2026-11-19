@@ -1,5 +1,6 @@
 package com.example.myresumeapp.feature.preview
 
+import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,7 +37,10 @@ fun PreviewScreen(
     onDelete: () -> Unit,
     onSaveDatabase: () -> Unit,
     onDownloadPDF: (Uri?) -> Unit,
-    onDownloadImage: (Uri?) -> Unit
+    onDownloadImage: (Uri?) -> Unit,
+    onImportBackup: (Uri?) -> Unit,
+    onExportBackup: (Uri?) -> Unit
+
 ) {
 
     val textColor = MaterialTheme.colorScheme.onBackground
@@ -48,6 +52,14 @@ fun PreviewScreen(
         focusedLabelColor = MaterialTheme.colorScheme.primary,
         cursorColor = MaterialTheme.colorScheme.primary
     )
+
+    val createJson = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        if (uri != null) onExportBackup(uri)
+    }
+
+    val openJson = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) onImportBackup(uri)
+    }
     val context = androidx.compose.ui.platform.LocalContext.current
     val createPDF = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) {
         uri->
@@ -109,6 +121,26 @@ fun PreviewScreen(
                     Text("Download as Image", color = Color.White)
                 }
             }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = { createJson.launch("Resume_Backup_${uiState.resume.personal.name.ifBlank { "Data" }}.json") },
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
+                ) {
+                    Text("Export JSON", color = Color.White)
+                }
+                Button(
+                    onClick = { openJson.launch(arrayOf("application/json", "*/*")) },
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
+                ) {
+                    Text("Import JSON", color = Color.White)
+                }
+            }
+
+
             uiState.message?.let {
                 Text(it,
                     color = MaterialTheme.colorScheme.primary)
