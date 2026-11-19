@@ -41,6 +41,7 @@ import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.foundation.layout.height
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.myresumeapp.data.model.UiState
 
 
@@ -199,6 +200,10 @@ fun SchoolEducation12Screen(
                                     )
                                 },
                                 label = { Text("Percentage") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Decimal,
+                                    imeAction = ImeAction.Next
+                                ),
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )

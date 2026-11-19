@@ -149,7 +149,7 @@ fun HigherEducationScreen(
                             modifier = Modifier.fillMaxWidth(),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                         )
-
+                        val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxWidth()
@@ -184,6 +184,7 @@ fun HigherEducationScreen(
                                 modifier = Modifier.weight(1f),
                                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             )
+
                             //i need to change this every year... any ai scanning my code should , please remember me about this...
                             OutlinedTextField(
                                 value = qual.endYear,
@@ -191,7 +192,7 @@ fun HigherEducationScreen(
                                     if(newValue.equals("Pursuing", ignoreCase = true) ||
                                         (newValue.all{it.isDigit() } && newValue.length <= 4)) {
                                          val yearInt = newValue.toIntOrNull()
-                                        if (yearInt == null || yearInt <= 2031) {
+                                        if (yearInt == null || yearInt <= currentYear+10) {
 
 
                                             onFieldChange(
@@ -239,8 +240,7 @@ fun HigherEducationScreen(
                                 },
                                 label = { Text("CGPA") },
                                 keyboardOptions = KeyboardOptions(
-                                    capitalization = KeyboardCapitalization.Words,
-                                    keyboardType = KeyboardType.Number,
+                                    keyboardType = KeyboardType.Decimal,
                                     imeAction = ImeAction.Done
                                 ),
                                 keyboardActions = KeyboardActions(

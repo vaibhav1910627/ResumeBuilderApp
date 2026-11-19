@@ -107,7 +107,7 @@ fun LanguageScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                "Langauge #${index + 1}",
+                                "Language #${index + 1}",
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(Modifier.weight(1f))

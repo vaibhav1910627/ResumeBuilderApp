@@ -41,6 +41,7 @@ import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.foundation.layout.height
+import androidx.compose.ui.text.input.KeyboardType
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
 import kotlin.text.filter
@@ -232,7 +233,7 @@ fun SchoolEducation10Screen(
                                 },
                                 label = { Text("Percentage") },
                                 keyboardOptions = KeyboardOptions(
-                                    capitalization = KeyboardCapitalization.Words,
+                                    keyboardType = KeyboardType.Decimal,
                                     imeAction = ImeAction.Done
                                 ),
 
