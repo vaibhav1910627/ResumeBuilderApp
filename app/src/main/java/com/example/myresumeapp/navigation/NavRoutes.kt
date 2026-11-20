@@ -58,6 +58,7 @@ import com.example.myresumeapp.components.LocalAtsScore
 import com.example.myresumeapp.components.LocalCoroutineScope
 import com.example.myresumeapp.components.LocalDrawerState
 import com.example.myresumeapp.components.LocalOnAtsClick
+import com.example.myresumeapp.components.LocalStepProgress
 import com.example.myresumeapp.feature.editor.CareerObjectiveScreen
 import com.example.myresumeapp.feature.editor.CertificateScreen
 import com.example.myresumeapp.feature.editor.ExperienceScreen
@@ -100,6 +101,21 @@ object Routes {
 
     const val PREVIEW = "PREVIEW"
 }
+
+val editorRoutes = listOf(
+    Routes.PERSONAL,
+    Routes.CAREER,
+    Routes.SKILLS,
+    Routes.SCHOOL10EDUCATION,
+    Routes.SCHOOL12EDUCATION,
+    Routes.HIGHEREDUCATION,
+    Routes.EXPERIENCE,
+    Routes.PROJECT,
+    Routes.ACHIEVEMENTS,
+    Routes.CERTIFICATES,
+    Routes.LANGUAGE,
+    Routes.PREVIEW
+)
 
 @Composable
 fun AppNavigation(navController: NavHostController = rememberNavController()) {
@@ -213,12 +229,16 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
 
         }
     }
+
+    val currentStepIndex = editorRoutes.indexOf(currentRoute).coerceAtLeast(0)
+    val currentProgress = (currentStepIndex + 1).toFloat() / editorRoutes.size
     if (showDrawer) {
         CompositionLocalProvider(
             LocalDrawerState provides drawerState,
             LocalCoroutineScope provides scope,
             LocalAtsScore provides atsResult.overallScore,
-            LocalOnAtsClick provides {showAtsSheet = true}
+            LocalOnAtsClick provides {showAtsSheet = true},
+            LocalStepProgress provides currentProgress
         ) {
             ModalNavigationDrawer(
                 drawerState = drawerState,
