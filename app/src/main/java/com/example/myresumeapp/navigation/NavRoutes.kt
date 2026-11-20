@@ -1,5 +1,6 @@
 package com.example.myresumeapp.navigation
 
+import androidx.activity.compose.LocalActivityResultRegistryOwner.provides
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,8 +53,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myresumeapp.components.AtsScoreBottomSheet
+import com.example.myresumeapp.components.LocalAtsScore
 import com.example.myresumeapp.components.LocalCoroutineScope
 import com.example.myresumeapp.components.LocalDrawerState
+import com.example.myresumeapp.components.LocalOnAtsClick
 import com.example.myresumeapp.feature.editor.CareerObjectiveScreen
 import com.example.myresumeapp.feature.editor.CertificateScreen
 import com.example.myresumeapp.feature.editor.ExperienceScreen
@@ -90,7 +94,7 @@ object Routes {
     const val EXPERIENCE = "experience"
 
     const val LANGUAGE = "language"
-    const val PROJECT  = "project"
+    const val PROJECT = "project"
     const val CERTIFICATES = "certificates"
     const val ACHIEVEMENTS = "achievements"
 
@@ -157,7 +161,11 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                 ) {
                     Column {
                         Text("ATS Completeness", style = MaterialTheme.typography.labelMedium)
-                        Text("${atsResult.overallScore}% • ${atsResult.grade}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            "${atsResult.overallScore}% • ${atsResult.grade}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                     Icon(imageVector = Icons.Default.Analytics, contentDescription = "ATS Score")
                 }
@@ -187,7 +195,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                     selected = isSelected,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        if(!isSelected) {
+                        if (!isSelected) {
                             navController.navigate(route) {
                                 popUpTo(navController.graph.startDestinationId) {
                                     saveState = true
@@ -208,7 +216,9 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
     if (showDrawer) {
         CompositionLocalProvider(
             LocalDrawerState provides drawerState,
-            LocalCoroutineScope provides scope
+            LocalCoroutineScope provides scope,
+            LocalAtsScore provides atsResult.overallScore,
+            LocalOnAtsClick provides {showAtsSheet = true}
         ) {
             ModalNavigationDrawer(
                 drawerState = drawerState,
@@ -229,153 +239,177 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
 fun ResumeNavHost(
     navController: NavHostController,
     resumeViewModel: ResumeViewModel
-)    {
+) {
+    var showAtsSheet by remember { mutableStateOf(false) }
+    val atsResult = resumeViewModel.atsScoreResult
 
-    NavHost(navController, startDestination = Routes.SIGNUP) {
-        composable(Routes.SIGNUP) {
-            SignupScreen(
-                onSignupSuccess = { navController.navigate(Routes.PERSONAL) },
-                onNavigateToLogin = { navController.navigate(Routes.LOGIN) },
-                onGuestLogin = {navController.navigate(Routes.PERSONAL)}
-            )
-        }
-        composable(Routes.LOGIN) {
-            LoginScreen(
-                onLoginSuccess = { navController.navigate(Routes.PERSONAL) },
-                onNavigateToSignup = { navController.navigate(Routes.SIGNUP) },
-                onGuestLogin = {navController.navigate(Routes.PERSONAL)}
-            )
-        }
+    if (showAtsSheet) {
+        AtsScoreBottomSheet(
+            atsResult = atsResult,
+            onDismiss = {
+                showAtsSheet = false
+            },
+            onNavigateToSection = { route ->
+                showAtsSheet = false
+                navController.navigate(route) {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
 
-        composable(Routes.PERSONAL) {
-            PersonalScreen(
-                uiState = resumeViewModel.uiState,
-                onNext = {navController.navigate(Routes.CAREER)},
-                onPhotoPicked = resumeViewModel::setPhotoUri,
-                onFieldChange = resumeViewModel::updatePersonal
-            )
-        }
-        composable(Routes.CAREER) {
-            CareerObjectiveScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.SKILLS)},
-                onFieldChange = resumeViewModel::updateCareerObjective
-            )
-        }
+    }
+    CompositionLocalProvider(
+        LocalAtsScore provides atsResult.overallScore,
+        LocalOnAtsClick provides { showAtsSheet = true }
+    ) {
+        NavHost(navController, startDestination = Routes.SIGNUP) {
+            composable(Routes.SIGNUP) {
+                SignupScreen(
+                    onSignupSuccess = { navController.navigate(Routes.PERSONAL) },
+                    onNavigateToLogin = { navController.navigate(Routes.LOGIN) },
+                    onGuestLogin = { navController.navigate(Routes.PERSONAL) }
+                )
+            }
+            composable(Routes.LOGIN) {
+                LoginScreen(
+                    onLoginSuccess = { navController.navigate(Routes.PERSONAL) },
+                    onNavigateToSignup = { navController.navigate(Routes.SIGNUP) },
+                    onGuestLogin = { navController.navigate(Routes.PERSONAL) }
+                )
+            }
 
-        composable(Routes.SKILLS) {
-            SkillScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.SCHOOL10EDUCATION)},
-                onAdd = resumeViewModel::addSkill,
-                onRemove = resumeViewModel::removeSkill,
-                onFieldChange = resumeViewModel::updateSkill
-            )
-        }
+            composable(Routes.PERSONAL) {
+                PersonalScreen(
+                    uiState = resumeViewModel.uiState,
+                    onNext = { navController.navigate(Routes.CAREER) },
+                    onPhotoPicked = resumeViewModel::setPhotoUri,
+                    onFieldChange = resumeViewModel::updatePersonal
+                )
+            }
+            composable(Routes.CAREER) {
+                CareerObjectiveScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.SKILLS) },
+                    onFieldChange = resumeViewModel::updateCareerObjective
+                )
+            }
 
-        composable(Routes.SCHOOL10EDUCATION) {
-            SchoolEducation10Screen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.SCHOOL12EDUCATION)},
-                onFieldChange = resumeViewModel::updateSchool10Education
-            )
-        }
-        composable(Routes.SCHOOL12EDUCATION) {
-            SchoolEducation12Screen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.HIGHEREDUCATION)},
-                onFieldChange = resumeViewModel::updateSchool12Education
-            )
-        }
-        composable(Routes.HIGHEREDUCATION) {
-            HigherEducationScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.EXPERIENCE)},
-                onAdd = resumeViewModel::addHigherEducation,
-                onRemove = resumeViewModel::removeHigherEducation,
-                onFieldChange = resumeViewModel::updateHigherEducation
-            )
-        }
+            composable(Routes.SKILLS) {
+                SkillScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.SCHOOL10EDUCATION) },
+                    onAdd = resumeViewModel::addSkill,
+                    onRemove = resumeViewModel::removeSkill,
+                    onFieldChange = resumeViewModel::updateSkill
+                )
+            }
 
-        composable(Routes.EXPERIENCE) {
+            composable(Routes.SCHOOL10EDUCATION) {
+                SchoolEducation10Screen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.SCHOOL12EDUCATION) },
+                    onFieldChange = resumeViewModel::updateSchool10Education
+                )
+            }
+            composable(Routes.SCHOOL12EDUCATION) {
+                SchoolEducation12Screen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.HIGHEREDUCATION) },
+                    onFieldChange = resumeViewModel::updateSchool12Education
+                )
+            }
+            composable(Routes.HIGHEREDUCATION) {
+                HigherEducationScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.EXPERIENCE) },
+                    onAdd = resumeViewModel::addHigherEducation,
+                    onRemove = resumeViewModel::removeHigherEducation,
+                    onFieldChange = resumeViewModel::updateHigherEducation
+                )
+            }
 
-            ExperienceScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.PROJECT)},
-                onAdd = resumeViewModel::addExperience,
-                onRemove = resumeViewModel::removeExperience,
-                onFieldChange = resumeViewModel::updateExperience
-            )
+            composable(Routes.EXPERIENCE) {
 
-        }
+                ExperienceScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.PROJECT) },
+                    onAdd = resumeViewModel::addExperience,
+                    onRemove = resumeViewModel::removeExperience,
+                    onFieldChange = resumeViewModel::updateExperience
+                )
 
-        composable(Routes.PROJECT) {
-            ProjectScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = { navController.popBackStack() },
-                onNext = { navController.navigate(Routes.ACHIEVEMENTS) },
-                onAdd = resumeViewModel::addProject,
-                onRemove = resumeViewModel::removeProject,
-                onFieldChange = resumeViewModel::updateProject
-            )
-        }
+            }
 
-        composable(Routes.ACHIEVEMENTS) {
-            AchievementScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.CERTIFICATES)},
-                onAdd = resumeViewModel::addAchievement,
-                onRemove = resumeViewModel::removeAchievement,
-                onFieldChange = resumeViewModel::updateAchievement
-            )
-        }
+            composable(Routes.PROJECT) {
+                ProjectScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.ACHIEVEMENTS) },
+                    onAdd = resumeViewModel::addProject,
+                    onRemove = resumeViewModel::removeProject,
+                    onFieldChange = resumeViewModel::updateProject
+                )
+            }
 
-        composable(Routes.CERTIFICATES) {
-            CertificateScreen(
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.LANGUAGE)},
-                onAdd = resumeViewModel::addCertificate,
-                onRemove = resumeViewModel::removeCertificate,
-                onFieldChange = resumeViewModel::updateCertificate
-            )
-        }
+            composable(Routes.ACHIEVEMENTS) {
+                AchievementScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.CERTIFICATES) },
+                    onAdd = resumeViewModel::addAchievement,
+                    onRemove = resumeViewModel::removeAchievement,
+                    onFieldChange = resumeViewModel::updateAchievement
+                )
+            }
+
+            composable(Routes.CERTIFICATES) {
+                CertificateScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.LANGUAGE) },
+                    onAdd = resumeViewModel::addCertificate,
+                    onRemove = resumeViewModel::removeCertificate,
+                    onFieldChange = resumeViewModel::updateCertificate
+                )
+            }
 
 
-        composable(Routes.LANGUAGE) {
-            LanguageScreen (
-                uiState = resumeViewModel.uiState,
-                onPrev = {navController.popBackStack()},
-                onNext = {navController.navigate(Routes.PREVIEW)},
-                onAdd = resumeViewModel::addLanguage,
-                onRemove = resumeViewModel::removeLanguage,
-                onFieldChange = resumeViewModel::updateLanguage
-            )
-        }
-        composable(Routes.PREVIEW) {
-            PreviewScreen(
-                uiState = resumeViewModel.uiState,
-                onEdit = {navController.popBackStack(Routes.PERSONAL, inclusive = false)},
-                onDelete = {
-                    resumeViewModel.deleteAll {
-                        navController.popBackStack(Routes.PERSONAL, inclusive = false)
-                    }
-                },
-                onSaveDatabase = { resumeViewModel.saveFirebase() },
-                onDownloadPDF = { uri -> resumeViewModel.downloadPDF(uri) },
-                onDownloadImage = { uri -> resumeViewModel.downloadImage(uri) },
-                onImportBackup = { uri -> resumeViewModel.importBackupJson(uri) },
-                onExportBackup = { uri -> resumeViewModel.exportBackupJson(uri) }
+            composable(Routes.LANGUAGE) {
+                LanguageScreen(
+                    uiState = resumeViewModel.uiState,
+                    onPrev = { navController.popBackStack() },
+                    onNext = { navController.navigate(Routes.PREVIEW) },
+                    onAdd = resumeViewModel::addLanguage,
+                    onRemove = resumeViewModel::removeLanguage,
+                    onFieldChange = resumeViewModel::updateLanguage
+                )
+            }
+            composable(Routes.PREVIEW) {
+                PreviewScreen(
+                    uiState = resumeViewModel.uiState,
+                    onEdit = { navController.popBackStack(Routes.PERSONAL, inclusive = false) },
+                    onDelete = {
+                        resumeViewModel.deleteAll {
+                            navController.popBackStack(Routes.PERSONAL, inclusive = false)
+                        }
+                    },
+                    onSaveDatabase = { resumeViewModel.saveFirebase() },
+                    onDownloadPDF = { uri -> resumeViewModel.downloadPDF(uri) },
+                    onDownloadImage = { uri -> resumeViewModel.downloadImage(uri) },
+                    onImportBackup = { uri -> resumeViewModel.importBackupJson(uri) },
+                    onExportBackup = { uri -> resumeViewModel.exportBackupJson(uri) }
 //                        navController.navigate(Routes.PERSONAL)
 //
-            )
+                )
+            }
         }
     }
 }
