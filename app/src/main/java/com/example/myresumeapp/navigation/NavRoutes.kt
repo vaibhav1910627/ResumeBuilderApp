@@ -1,11 +1,17 @@
 package com.example.myresumeapp.navigation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons.Default as Default
 import com.example.myresumeapp.feature.editor.AchievementScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
@@ -17,6 +23,8 @@ import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Work
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,8 +38,13 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -90,6 +103,26 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    //to be erased in future mb
+    var showAtsSheet by remember { mutableStateOf(false) }
+    val atsResult = resumeViewModel.atsScoreResult
+
+    if (showAtsSheet) {
+        com.example.myresumeapp.components.AtsScoreBottomSheet(
+            atsResult = atsResult,
+            onDismiss = { showAtsSheet = false },
+            onNavigateToSection = { route ->
+                showAtsSheet = false
+                navController.navigate(route) {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
+    }
+
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -105,6 +138,30 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             )
             Spacer(modifier = androidx.compose.ui.Modifier.height(12.dp))
             HorizontalDivider()
+            Spacer(modifier = androidx.compose.ui.Modifier.height(8.dp))
+
+            Card(
+                onClick = {
+                    scope.launch { drawerState.close() }
+                    showAtsSheet = true
+                },
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text("ATS Completeness", style = MaterialTheme.typography.labelMedium)
+                        Text("${atsResult.overallScore}% • ${atsResult.grade}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    }
+                    Icon(imageVector = Icons.Default.Analytics, contentDescription = "ATS Score")
+                }
+            }
             Spacer(modifier = androidx.compose.ui.Modifier.height(8.dp))
 
             val navItems = listOf(
@@ -164,6 +221,8 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
         ResumeNavHost(navController, resumeViewModel)
 
     }
+
+
 }
 
 @Composable
@@ -288,6 +347,7 @@ fun ResumeNavHost(
                 onFieldChange = resumeViewModel::updateCertificate
             )
         }
+
 
         composable(Routes.LANGUAGE) {
             LanguageScreen (

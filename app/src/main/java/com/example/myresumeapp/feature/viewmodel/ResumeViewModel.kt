@@ -38,6 +38,9 @@ class ResumeViewModel @Inject constructor (
     private val internalUiState = mutableStateOf(UiState())
     val uiState: UiState get() = internalUiState.value
 
+    val atsScoreResult: com.example.myresumeapp.core.utils.AtsScoreResult
+        get() = com.example.myresumeapp.core.utils.AtsScoreAnalyser.analyze(uiState.resume)
+
     fun setPhotoUri(uri: Uri?) {
         internalUiState.value = internalUiState.value.copy(localPhotoUri = uri)
 
