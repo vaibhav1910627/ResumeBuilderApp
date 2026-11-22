@@ -58,8 +58,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myresumeapp.components.AtsScoreBottomSheet
 import com.example.myresumeapp.components.LocalAtsScore
 import com.example.myresumeapp.components.LocalCoroutineScope
+import com.example.myresumeapp.components.LocalCurrentStepIndex
 import com.example.myresumeapp.components.LocalDrawerState
 import com.example.myresumeapp.components.LocalOnAtsClick
+import com.example.myresumeapp.components.LocalOnStepSelected
 import com.example.myresumeapp.components.LocalStepProgress
 import com.example.myresumeapp.feature.editor.CareerObjectiveScreen
 import com.example.myresumeapp.feature.editor.CertificateScreen
@@ -248,7 +250,17 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             LocalCoroutineScope provides scope,
             LocalAtsScore provides atsResult.overallScore,
             LocalOnAtsClick provides {showAtsSheet = true},
-            LocalStepProgress provides currentProgress
+            LocalStepProgress provides currentProgress,
+            LocalCurrentStepIndex provides currentStepIndex,
+            LocalOnStepSelected provides {targetIndex ->
+                val targetRoute = editorRoutes.getOrNull(targetIndex)
+                if (targetRoute != null && targetRoute != currentRoute) {
+                    navController.navigate(targetRoute) {
+                        popUpTo(Routes.PERSONAL) {inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
+            }
         ) {
             ModalNavigationDrawer(
                 drawerState = drawerState,
