@@ -1,5 +1,6 @@
 package com.example.myresumeapp.navigation
 
+import android.R.attr.onClick
 import androidx.activity.compose.LocalActivityResultRegistryOwner.provides
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -184,6 +186,14 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                         )
                     }
                     Icon(imageVector = Icons.Default.Analytics, contentDescription = "ATS Score")
+                    TextButton(onClick = {
+                        scope.launch { drawerState.close() }
+                        resumeViewModel.autofillSampleData()
+                    },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    ) {
+                        Text("✨Autofill Sample Resume Data", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
             Spacer(modifier = androidx.compose.ui.Modifier.height(8.dp))

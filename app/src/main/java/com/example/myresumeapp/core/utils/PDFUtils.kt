@@ -149,36 +149,41 @@ fun drawResumeContent(
     canvas.drawText("TECHNICAL SKILLS", 40f, y, headerPaint)
     y += 16f
 
-    val userSkills = resume.skills.map { it.skill }.filter { it.isNotBlank() }
-    val userSkills2 = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
-    val userSkills3 = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
-    val userLanguages = resume.language
+    val techSkills = resume.skills.map { it.skill }.filter { it.isNotBlank() }
+    val frameworks = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
+    val tools = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
+    val spokenLangs = resume.language
         .filter { it.language.isNotBlank() }
         .map{if(it.proficiency.isNotBlank()) "${it.language} (${it.proficiency})" else it.language }
 
-    val dynamicCategories = listOfNotNull(
-        if (userSkills.isNotEmpty()) "Technical Skills" to userSkills else null,
-        if (userSkills2.isNotEmpty()) "Frameworks & Libraries" to userSkills2 else null,
-        if (userSkills3.isNotEmpty()) "Tools & Platforms" to userSkills3 else null,
-        if (userLanguages.isNotEmpty()) "Languages" to userLanguages else null
+    val hasAnySkills = techSkills.isNotEmpty() || frameworks.isNotEmpty() || tools.isNotEmpty() || spokenLangs.isNotEmpty()
 
-    )
-    if (dynamicCategories.isNotEmpty()) {
-        canvas.drawText("Skills & Languages", 40f, y, headerPaint)
+    if (hasAnySkills) {
+        canvas.drawText("TECHNICAL SKILLS & LANGUAGES", 40f, y, headerPaint)
         y += 16f
 
-        dynamicCategories.forEach { (category, skillsList) ->
-            val cleanSkills = skillsList.joinToString(", ")
-            canvas.drawText("$category: ", 40f, y, boldTextPaint)
-            val prefixWidth = boldTextPaint.measureText("$category: ")
-            y = drawMultiLine(
-                canvas,
-                text = cleanSkills,
-                40f + prefixWidth,
-                y,
-                (PAGE_WIDTH - 80 - prefixWidth).toInt(),
-                textPaint
-            )
+        if (techSkills.isNotEmpty()) {
+            canvas.drawText("Languages & Core: ", 40f, y, boldTextPaint)
+            val prefixW = boldTextPaint.measureText("Languages & Core: ")
+            y = drawMultiLine(canvas, techSkills.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
+        }
+
+        if (frameworks.isNotEmpty()) {
+            canvas.drawText("Frameworks & Tech: ", 40f, y, boldTextPaint)
+            val prefixW = boldTextPaint.measureText("Frameworks & Tech: ")
+            y = drawMultiLine(canvas, frameworks.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
+        }
+
+        if (tools.isNotEmpty()) {
+            canvas.drawText("Tools & Platforms: ", 40f, y, boldTextPaint)
+            val prefixW = boldTextPaint.measureText("Tools & Platforms: ")
+            y = drawMultiLine(canvas, tools.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
+        }
+
+        if (spokenLangs.isNotEmpty()) {
+            canvas.drawText("Languages Spoken: ", 40f, y, boldTextPaint)
+            val prefixW = boldTextPaint.measureText("Languages Spoken: ")
+            y = drawMultiLine(canvas, spokenLangs.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
         }
 
         y += 4f

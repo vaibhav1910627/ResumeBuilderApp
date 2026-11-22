@@ -4,6 +4,7 @@ package com.example.myresumeapp.feature.viewmodel
 //import ResumeRepository
 import com.example.myresumeapp.data.repository.ResumeRepository
 import android.app.Application
+import android.app.Person
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -23,6 +24,9 @@ import com.example.myresumeapp.data.model.UiState
 import com.example.myresumeapp.core.utils.generateResumeImageToURI
 import com.example.myresumeapp.core.utils.generateResumePDFToURI
 import com.example.myresumeapp.core.utils.toSoftwareBitmap
+import com.example.myresumeapp.data.model.CareerObjective
+import com.example.myresumeapp.data.model.PersonalDetails
+import com.example.myresumeapp.data.model.ResumeData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -670,5 +674,84 @@ class ResumeViewModel @Inject constructor (
         internalUiState.value = internalUiState.value.copy(
             resume = internalUiState.value.resume.copy(achievements = currentAchievement)
         )
+    }
+
+    fun autofillSampleData() {
+        val sampleResume = ResumeData(
+            id = "sample_resume",
+            personal = PersonalDetails(
+            name = "Alex Vance",
+            email = "alex.vance@example.com",
+            phone = "+1 555-019-2834",
+            country = "United-States",
+            countryCode = "+1",
+            location = "San Francisco, CA",
+            githublink = "github.com/alexvance",
+            linkedinlink = "linkedin.com/in/alexvance"
+        ),
+            career = CareerObjective(
+                careerDescription = "Passionate Senior Android Developer with 4+ years of experience building scalable, offline-first mobile applications using Kotlin, Jetpack Compose, and Dagger Hilt."
+            ),
+            higherEducation = listOf(
+                HigherEducation(
+                    degree = "B.S. in Computer Science",
+                    institution = "UC Berkeley",
+                    startYear = "2018",
+                    endYear = "2022",
+                    CGPA = "3.85"
+                )
+            ),
+            school10Education = com.example.myresumeapp.data.model.School10Education(
+                school10 = "St. Jude High School", board10 = "CBSE", startYear10 = "2014", endYear10 = "2016", percentage10 = "94%"
+            ),
+            school12Education = com.example.myresumeapp.data.model.School12Education(
+                school12 = "St. Jude Senior Academy", board12 = "CBSE", startYear12 = "2016", endYear12 = "2018", percentage12 = "92%"
+            ),
+            skills = listOf(
+                com.example.myresumeapp.data.model.Skills("Kotlin"),
+                com.example.myresumeapp.data.model.Skills("Java"),
+                com.example.myresumeapp.data.model.Skills("Python"),
+                com.example.myresumeapp.data.model.Skills("SQL")
+            ),
+            skills2 = listOf(
+                com.example.myresumeapp.data.model.Skills2("Jetpack Compose"),
+                com.example.myresumeapp.data.model.Skills2("Coroutines & Flow"),
+                com.example.myresumeapp.data.model.Skills2("Dagger Hilt"),
+                com.example.myresumeapp.data.model.Skills2("Room DB"),
+                com.example.myresumeapp.data.model.Skills2("Retrofit")
+            ),
+            skills3 = listOf(
+                com.example.myresumeapp.data.model.Skills3("Git & GitHub"),
+                com.example.myresumeapp.data.model.Skills3("Docker"),
+                com.example.myresumeapp.data.model.Skills3("Firebase"),
+                com.example.myresumeapp.data.model.Skills3("CI/CD")
+            ),
+            language = listOf(
+                com.example.myresumeapp.data.model.Language("English", "Native"),
+                com.example.myresumeapp.data.model.Language("Spanish", "Intermediate")
+            ),
+            experience = listOf(
+                com.example.myresumeapp.data.model.Experience(
+                    company = "TechCorp Mobile",
+                    role = "Senior Android Engineer",
+                    startMonthYear = "Jan 2022",
+                    endMonthYear = "Present",
+                    responsibilities = "Spearheaded the redesign of the core Android app using Jetpack Compose and MVVM, improving app performance by 35% across 500k+ active users."
+                )
+            ),
+            projects = listOf(
+                com.example.myresumeapp.data.model.Project(
+                    projectName = "MyResumeApp",
+                    technology = "Kotlin, Compose, Hilt, Room, Glance",
+                    description = "Offline-first Android resume builder with ATS optimization and PDF rendering."
+                )
+            )
+        )
+
+        internalUiState.value = internalUiState.value.copy(
+            resume = sampleResume,
+            message = "Sample resume data loaded!"
+        )
+        saveFirebase()
     }
 }

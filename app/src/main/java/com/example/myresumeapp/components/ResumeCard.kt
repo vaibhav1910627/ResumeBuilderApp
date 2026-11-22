@@ -17,14 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myresumeapp.data.model.ResumeData
 
 @Composable
-fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
+fun ResumeCard(resume: ResumeData, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.large,
@@ -45,15 +48,15 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
 //                    modifier = Modifier.size(96.dp),
 //                    contentScale = ContentScale.Crop
 //                )
-            if(resume.personal.name.isNotBlank()) {
+            if (resume.personal.name.isNotBlank()) {
 
-            Text(
-                resume.personal.name,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A1A1A),
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    resume.personal.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1A1A1A),
+                    textAlign = TextAlign.Center
+                )
                 Spacer(modifier = Modifier.height(4.dp))
             }
             val contactInfo = listOfNotNull(
@@ -102,25 +105,35 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
             }
 
             // 3. Technical Skills
-            val allSkills = (resume.skills.map { it.skill } +
-                    resume.skills2.map { it.skill2 } +
-                    resume.skills3.map { it.skill3 })
-                .filter { it.isNotBlank() }
+            val programmingLangs = resume.skills.map { it.skill }.filter { it.isNotBlank() }
+            val frameworks = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
+            val toolsAndPlatforms = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
+            val spokenLangs = resume.language.filter { it.language.isNotBlank() }.map {
+                if (it.proficiency.isNotBlank()) "${it.language} (${it.proficiency})" else it.language
+            }
 
-            if (allSkills.isNotEmpty()) {
-                ResumeSectionHeader("TECHNICAL SKILLS")
-                Text(
-                    text = allSkills.joinToString(" • "),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF212121),
-                    modifier = Modifier.fillMaxWidth()
-                )
+            if (programmingLangs.isNotEmpty() || frameworks.isNotEmpty() || toolsAndPlatforms.isNotEmpty() || spokenLangs.isNotEmpty()) {
+                ResumeSectionHeader("TECHNICAL SKILLS & LANGUAGES")
+
+                if (programmingLangs.isNotEmpty()) {
+                    SkillCategoryRow("Programming Languages", programmingLangs)
+                }
+                if (frameworks.isNotEmpty()) {
+                    SkillCategoryRow("Frameworks & Libraries", frameworks)
+                }
+                if (toolsAndPlatforms.isNotEmpty()) {
+                    SkillCategoryRow("Tools & Platforms", toolsAndPlatforms)
+                }
+                if (spokenLangs.isNotEmpty()) {
+                    SkillCategoryRow("Languages Spoken", spokenLangs)
+                }
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
+
             // 4. Experience
-            val validExp = resume.experience.filter { it.company.isNotBlank() || it.role.isNotBlank() }
+            val validExp =
+                resume.experience.filter { it.company.isNotBlank() || it.role.isNotBlank() }
             if (validExp.isNotEmpty()) {
                 ResumeSectionHeader("WORK EXPERIENCE")
                 validExp.forEach { exp ->
@@ -161,7 +174,8 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
             }
 
             // 5. Higher Education
-            val validEdu = resume.higherEducation.filter { it.degree.isNotBlank() || it.institution.isNotBlank() }
+            val validEdu =
+                resume.higherEducation.filter { it.degree.isNotBlank() || it.institution.isNotBlank() }
             if (validEdu.isNotEmpty()) {
                 ResumeSectionHeader("EDUCATION")
                 validEdu.forEach { edu ->
@@ -228,7 +242,9 @@ fun ResumeCard(resume: ResumeData,modifier: Modifier = Modifier) {
 
 @Composable
 private fun ResumeSectionHeader(title: String) {
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 4.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.labelLarge,
@@ -240,4 +256,25 @@ private fun ResumeSectionHeader(title: String) {
         HorizontalDivider(color = Color(0xFF2B3A55), thickness = 1.dp)
         Spacer(modifier = Modifier.height(6.dp))
     }
+}
+
+@Composable
+private fun SkillCategoryRow(domainName: String, skillsList: List<String>) {
+    val annotatedString = buildAnnotatedString {
+        // Dark Bold Domain Header
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))) {
+            append("$domainName: ")
+        }
+        // Regular Skill Text
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Normal, color = Color(0xFF424242))) {
+            append(skillsList.joinToString(", "))
+        }
+    }
+    Text(
+        text = annotatedString,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp)
+    )
 }
