@@ -731,7 +731,7 @@ class ResumeViewModel @Inject constructor (
                 com.example.myresumeapp.data.model.Language("Spanish", "Intermediate")
             ),
             experience = listOf(
-                com.example.myresumeapp.data.model.Experience(
+                Experience(
                     company = "TechCorp Mobile",
                     role = "Senior Android Engineer",
                     startMonthYear = "Jan 2022",
@@ -741,11 +741,42 @@ class ResumeViewModel @Inject constructor (
             ),
             projects = listOf(
                 com.example.myresumeapp.data.model.Project(
-                    projectName = "MyResumeApp",
-                    technology = "Kotlin, Compose, Hilt, Room, Glance",
-                    description = "Offline-first Android resume builder with ATS optimization and PDF rendering."
+                    projectName = "MyResumeApp - Native Android Resume Builder",
+                    technology = "Kotlin, Jetpack Compose, Dagger Hilt, Room DB, Glance",
+                    description = "Offline-first Android application enabling job seekers to create, ATS-optimize, and export professional PDF resumes with real-time preview."
+                ),
+                com.example.myresumeapp.data.model.Project(
+                    projectName = "E-Commerce Cloud Storefront",
+                    technology = "Kotlin, Firebase Auth, Coroutines, Retrofit, Stripe API",
+                    description = "Architected a full-featured shopping app with real-time product sync, secure checkout, and cloud order tracking."
+                ),
+                com.example.myresumeapp.data.model.Project(
+                    projectName = "DevPulse - Developer Community Platform",
+                    technology = "Java, Spring Boot, PostgreSQL, Docker, REST APIs",
+                    description = "Built a high-throughput backend API service powering developer discussion forums and codebase sharing."
                 )
-            )
+            ),
+
+            certificate = listOf(
+                com.example.myresumeapp.data.model.Certificates(
+                    association = "Google Cloud",
+                    topic = "Associate Android Developer Certification",
+                    startMonthYear = "Aug 2022",
+                    endMonthYear = ""
+                ),
+                com.example.myresumeapp.data.model.Certificates(
+                    association = "Meta / Coursera",
+                    topic = "Meta Android Developer Professional Certificate",
+                    startMonthYear = "Mar 2023",
+                    endMonthYear = ""
+                ),
+                com.example.myresumeapp.data.model.Certificates(
+                    association = "Amazon Web Services",
+                    topic = "AWS Certified Solutions Architect",
+                    startMonthYear = "Jan 2024",
+                    endMonthYear = ""
+                )
+            ),
         )
 
         internalUiState.value = internalUiState.value.copy(

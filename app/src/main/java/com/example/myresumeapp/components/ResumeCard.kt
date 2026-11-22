@@ -39,7 +39,7 @@ fun ResumeCard(resume: ResumeData, modifier: Modifier = Modifier) {
             Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+//            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
 //                AsyncImage(
@@ -48,44 +48,48 @@ fun ResumeCard(resume: ResumeData, modifier: Modifier = Modifier) {
 //                    modifier = Modifier.size(96.dp),
 //                    contentScale = ContentScale.Crop
 //                )
-            if (resume.personal.name.isNotBlank()) {
+            Column(modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (resume.personal.name.isNotBlank()) {
 
-                Text(
-                    resume.personal.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A1A),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-            val contactInfo = listOfNotNull(
-                resume.personal.email.takeIf { it.isNotBlank() },
-                resume.personal.phone.takeIf { it.isNotBlank() },
-                resume.personal.location.takeIf { it.isNotBlank() }
-            ).joinToString(" • ")
+                    Text(
+                        resume.personal.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1A1A1A),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+                val contactInfo = listOfNotNull(
+                    resume.personal.email.takeIf { it.isNotBlank() },
+                    resume.personal.phone.takeIf { it.isNotBlank() },
+                    resume.personal.location.takeIf { it.isNotBlank() }
+                ).joinToString(" • ")
 
-            if (contactInfo.isNotBlank()) {
-                Text(
-                    text = contactInfo,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF424242),
-                    textAlign = TextAlign.Center
-                )
-            }
+                if (contactInfo.isNotBlank()) {
+                    Text(
+                        text = contactInfo,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF424242),
+                        textAlign = TextAlign.Center
+                    )
+                }
 
-            val links = listOfNotNull(
-                resume.personal.githublink.takeIf { it.isNotBlank() },
-                resume.personal.linkedinlink.takeIf { it.isNotBlank() }
-            ).joinToString(" • ")
+                val links = listOfNotNull(
+                    resume.personal.githublink.takeIf { it.isNotBlank() },
+                    resume.personal.linkedinlink.takeIf { it.isNotBlank() }
+                ).joinToString(" • ")
 
-            if (links.isNotBlank()) {
-                Text(
-                    text = links,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFF1976D2),
-                    textAlign = TextAlign.Center
-                )
+                if (links.isNotBlank()) {
+                    Text(
+                        text = links,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF1976D2),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -93,121 +97,126 @@ fun ResumeCard(resume: ResumeData, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(12.dp))
 
             // 2. Career Objective
-            if (resume.career.careerDescription.isNotBlank()) {
-                ResumeSectionHeader("CAREER OBJECTIVE")
-                Text(
-                    text = resume.career.careerDescription,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF212121),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-
-            // 3. Technical Skills
-            val programmingLangs = resume.skills.map { it.skill }.filter { it.isNotBlank() }
-            val frameworks = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
-            val toolsAndPlatforms = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
-            val spokenLangs = resume.language.filter { it.language.isNotBlank() }.map {
-                if (it.proficiency.isNotBlank()) "${it.language} (${it.proficiency})" else it.language
-            }
-
-            if (programmingLangs.isNotEmpty() || frameworks.isNotEmpty() || toolsAndPlatforms.isNotEmpty() || spokenLangs.isNotEmpty()) {
-                ResumeSectionHeader("TECHNICAL SKILLS & LANGUAGES")
-
-                if (programmingLangs.isNotEmpty()) {
-                    SkillCategoryRow("Programming Languages", programmingLangs)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                if (resume.career.careerDescription.isNotBlank()) {
+                    ResumeSectionHeader("CAREER OBJECTIVE")
+                    Text(
+                        text = resume.career.careerDescription,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF212121),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
-                if (frameworks.isNotEmpty()) {
-                    SkillCategoryRow("Frameworks & Libraries", frameworks)
-                }
-                if (toolsAndPlatforms.isNotEmpty()) {
-                    SkillCategoryRow("Tools & Platforms", toolsAndPlatforms)
-                }
-                if (spokenLangs.isNotEmpty()) {
-                    SkillCategoryRow("Languages Spoken", spokenLangs)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-            }
 
+                // 3. Technical Skills
+                val programmingLangs = resume.skills.map { it.skill }.filter { it.isNotBlank() }
+                val frameworks = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
+                val toolsAndPlatforms = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
+                val spokenLangs = resume.language.filter { it.language.isNotBlank() }.map {
+                    if (it.proficiency.isNotBlank()) "${it.language} (${it.proficiency})" else it.language
+                }
 
-            // 4. Experience
-            val validExp =
-                resume.experience.filter { it.company.isNotBlank() || it.role.isNotBlank() }
-            if (validExp.isNotEmpty()) {
-                ResumeSectionHeader("WORK EXPERIENCE")
-                validExp.forEach { exp ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = exp.company,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1A1A1A)
-                        )
-                        Text(
-                            text = "${exp.startMonthYear} - ${exp.endMonthYear}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF616161)
-                        )
+                if (programmingLangs.isNotEmpty() || frameworks.isNotEmpty() || toolsAndPlatforms.isNotEmpty() || spokenLangs.isNotEmpty()) {
+                    ResumeSectionHeader("TECHNICAL SKILLS & LANGUAGES")
+
+                    if (programmingLangs.isNotEmpty()) {
+                        SkillCategoryRow("Programming Languages", programmingLangs)
                     }
-                    if (exp.role.isNotBlank()) {
-                        Text(
-                            text = exp.role,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF424242)
-                        )
+                    if (frameworks.isNotEmpty()) {
+                        SkillCategoryRow("Frameworks & Libraries", frameworks)
                     }
-                    if (exp.responsibilities.isNotBlank()) {
-                        Text(
-                            text = exp.responsibilities,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF212121)
-                        )
+                    if (toolsAndPlatforms.isNotEmpty()) {
+                        SkillCategoryRow("Tools & Platforms", toolsAndPlatforms)
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    if (spokenLangs.isNotEmpty()) {
+                        SkillCategoryRow("Languages Spoken", spokenLangs)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
-                Spacer(modifier = Modifier.height(4.dp))
-            }
 
-            // 5. Higher Education
-            val validEdu =
-                resume.higherEducation.filter { it.degree.isNotBlank() || it.institution.isNotBlank() }
-            if (validEdu.isNotEmpty()) {
-                ResumeSectionHeader("EDUCATION")
-                validEdu.forEach { edu ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "${edu.degree} - ${edu.institution}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1A1A1A),
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "${edu.startYear} - ${edu.endYear}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF616161)
-                        )
+
+                // 4. Experience
+                val validExp =
+                    resume.experience.filter { it.company.isNotBlank() || it.role.isNotBlank() }
+                if (validExp.isNotEmpty()) {
+                    ResumeSectionHeader("WORK EXPERIENCE")
+                    validExp.forEach { exp ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = exp.company,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF1A1A1A)
+                            )
+                            Text(
+                                text = "${exp.startMonthYear} - ${exp.endMonthYear}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFF616161)
+                            )
+                        }
+                        if (exp.role.isNotBlank()) {
+                            Text(
+                                text = exp.role,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF424242)
+                            )
+                        }
+                        if (exp.responsibilities.isNotBlank()) {
+                            Text(
+                                text = exp.responsibilities,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFF212121)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
-                    if (edu.CGPA.isNotBlank()) {
-                        Text(
-                            text = "CGPA: ${edu.CGPA}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF424242)
-                        )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                // 5. Higher Education
+                val validEdu =
+                    resume.higherEducation.filter { it.degree.isNotBlank() || it.institution.isNotBlank() }
+                if (validEdu.isNotEmpty()) {
+                    ResumeSectionHeader("EDUCATION")
+                    validEdu.forEach { edu ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "${edu.degree} - ${edu.institution}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF1A1A1A),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "${edu.startYear} - ${edu.endYear}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFF616161)
+                            )
+                        }
+                        if (edu.CGPA.isNotBlank()) {
+                            Text(
+                                text = "CGPA: ${edu.CGPA}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFF424242)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                 }
-                Spacer(modifier = Modifier.height(6.dp))
             }
-
             // 6. Projects
             val validProjects = resume.projects.filter { it.projectName.isNotBlank() }
             if (validProjects.isNotEmpty()) {
@@ -236,6 +245,20 @@ fun ResumeCard(resume: ResumeData, modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.height(6.dp))
                 }
             }
+
+            // Certificates
+            val validCerts = resume.certificate.filter { it.topic.isNotBlank() || it.association.isNotBlank() }
+            if (validCerts.isNotEmpty()) {
+                ResumeSectionHeader("CERTIFICATIONS")
+                validCerts.forEach { cert ->
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(text = "${cert.topic} (${cert.association})", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
+                        if (cert.startMonthYear.isNotBlank()) Text(text = cert.startMonthYear, style = MaterialTheme.typography.bodySmall, color = Color(0xFF616161))
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
+
         }
     }
 }
