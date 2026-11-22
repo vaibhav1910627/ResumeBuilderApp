@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeCard
+import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.data.model.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,48 +54,42 @@ fun PreviewScreen(
         cursorColor = MaterialTheme.colorScheme.primary
     )
 
-    val createJson = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-        if (uri != null) onExportBackup(uri)
-    }
-
-    val openJson = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) onImportBackup(uri)
-    }
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val createPDF = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) {
-        uri->
-        if(uri != null) {
-            onDownloadPDF(uri)
-            sharePdfFile(context, uri)
+    val createJson =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+            if (uri != null) onExportBackup(uri)
         }
-    }
-    val createImage = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) {
-            uri -> onDownloadImage(uri)
-    }
 
-    Scaffold(topBar = {
-        CenterAlignedTopAppBar(
-            title = {
-                Text("My Resume", color = textColor)
-            },
-            colors = TopAppBarDefaults.topAppBarColors(Color.Transparent),
-            navigationIcon = {
-                TextButton(onClick = onEdit,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)) {
-                    Text("Edit", color = Color.White)
-                }
-            }, actions = {
-                TextButton(onClick = onDelete,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)) {
-                    Text("Delete", color = Color.White)
-                }
+    val openJson =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) onImportBackup(uri)
+        }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val createPDF =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { uri ->
+            if (uri != null) {
+                onDownloadPDF(uri)
+                sharePdfFile(context, uri)
             }
+        }
+    val createImage =
+        rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { uri ->
+            onDownloadImage(uri)
+        }
+
+    Scaffold(
+        topBar = {
+        ResumeTopAppBar(
+            title = "Preview & Export",
+                onEdit
         )
-    }){
-        paddingValues ->
-        Column(Modifier.padding(paddingValues).padding(16.dp),
+    }) { paddingValues ->
+        Column(
+            Modifier
+                .padding(paddingValues)
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text("Resume Preview", style = MaterialTheme.typography.headlineMedium)
             Spacer(Modifier.height(6.dp))
 
@@ -105,18 +100,20 @@ fun PreviewScreen(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Button(onClick = onSaveDatabase,
+                Button(
+                    onClick = onSaveDatabase,
                     enabled = !uiState.isSaving,
-                    colors = ButtonDefaults.buttonColors(Color.Gray)) {
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
+                ) {
                     Text(if (uiState.isSaving) "Saving..." else "Save", color = Color.White)
                 }
                 Button(onClick = {
-                    createPDF.launch("Resume_${uiState.resume.personal.name.ifBlank{"My"}}.pdf")
+                    createPDF.launch("Resume_${uiState.resume.personal.name.ifBlank { "My" }}.pdf")
                 }, colors = ButtonDefaults.buttonColors(Color.Gray)) {
                     Text("Download PDF", color = Color.White)
                 }
                 Button(onClick = {
-                    createImage.launch("Resume_${uiState.resume.personal.name.ifBlank{"My"}}.pdf")
+                    createImage.launch("Resume_${uiState.resume.personal.name.ifBlank { "My" }}.pdf")
                 }, colors = ButtonDefaults.buttonColors(Color.Gray)) {
                     Text("Download as Image", color = Color.White)
                 }
@@ -142,8 +139,10 @@ fun PreviewScreen(
 
 
             uiState.message?.let {
-                Text(it,
-                    color = MaterialTheme.colorScheme.primary)
+                Text(
+                    it,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }

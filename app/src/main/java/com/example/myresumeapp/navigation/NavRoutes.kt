@@ -136,7 +136,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                 navController.navigate(route) {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
-                    restoreState = true
+//                    restoreState = true
                 }
             }
         )
@@ -217,7 +217,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                restoreState = true
+//                                restoreState = true
                             }
                         }
                     },
@@ -274,7 +274,7 @@ fun ResumeNavHost(
                 navController.navigate(route) {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
-                    restoreState = true
+//                    restoreState = true
                 }
             }
         )
@@ -415,7 +415,10 @@ fun ResumeNavHost(
             composable(Routes.PREVIEW) {
                 PreviewScreen(
                     uiState = resumeViewModel.uiState,
-                    onEdit = { navController.popBackStack(Routes.PERSONAL, inclusive = false) },
+                    onEdit = { navController.navigate(Routes.PERSONAL) {
+                        popUpTo(Routes.PERSONAL) { inclusive = true }
+                    }
+                    },
                     onDelete = {
                         resumeViewModel.deleteAll {
                             navController.popBackStack(Routes.PERSONAL, inclusive = false)

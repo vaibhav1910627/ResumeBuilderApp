@@ -126,6 +126,25 @@ fun drawResumeContent(
     canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
     y += 18f
 
+    // -------- CAREER OBJECTIVE SECTION ----------
+    if (resume.career.careerDescription.isNotBlank()) {
+        canvas.drawText("CAREER OBJECTIVE", 40f, y, headerPaint)
+        y += 16f
+        y = drawMultiLine(
+            canvas = canvas,
+            text = resume.career.careerDescription,
+            x = 40f,
+            startY = y,
+            maxWidth = (PAGE_WIDTH - 80).toInt(),
+            paint = textPaint
+        )
+
+        y += 4f
+        canvas.drawLine(40f, y, (PAGE_WIDTH - 40).toFloat(), y, divider)
+        y += 18f
+    }
+
+
     // -------- TECHNICAL SKILLS SECTION ----------
     canvas.drawText("TECHNICAL SKILLS", 40f, y, headerPaint)
     y += 16f
