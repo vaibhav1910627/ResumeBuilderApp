@@ -101,7 +101,7 @@ fun AtsScoreBottomSheet(
 
                     val scoreColor = when {
                         atsResult.overallScore >= 85 -> Color(0xFF2E7D32)
-                        atsResult.overallScore >= 70 -> Color(0xFFF57C00)
+                        atsResult.overallScore >= 40 && atsResult.overallScore <85 -> Color(0xFFF57C00)
                         else -> Color(0xFFD32F2F)
                     }
 
@@ -149,6 +149,21 @@ fun AtsScoreBottomSheet(
                                         )
                                         Image(
                                             painter = painterResource(id = R.drawable.hamster3),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .clip(CircleShape)
+                                        )
+                                    }
+                                    else if(atsResult.overallScore < 85 && atsResult.overallScore> 40) {
+                                        Text(
+                                            text = "Okay, but not acceptable",
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = scoreColor,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Image(
+                                            painter = painterResource(id = R.drawable.ham2sticker),
                                             contentDescription = null,
                                             modifier = Modifier
                                                 .size(50.dp)
