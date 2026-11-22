@@ -1,9 +1,15 @@
 package com.example.myresumeapp.feature.editor
 
 //import androidx.wear.compose.foundation.weight
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -17,14 +23,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -33,6 +45,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,7 +54,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myresumeapp.components.ResumeCard
@@ -49,119 +67,331 @@ import com.example.myresumeapp.components.ResumeTopAppBar
 import com.example.myresumeapp.core.theme.MyResumeAppTheme
 import com.example.myresumeapp.data.model.Skills
 import com.example.myresumeapp.data.model.UiState
+import com.google.gson.annotations.Expose
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun SmartSkillInputSection(
+fun SmartDomainSkillPicker(
     skillsList: List<Skills>,
     onAddSkill: (String) -> Unit,
     onRemoveSkill: (Int) -> Unit
 ) {
-    var textInput by remember {mutableStateOf("")}
-    var expanded by remember {mutableStateOf(false)}
+    var textInput by remember { mutableStateOf("") }
+    var selectedDomain by remember { mutableStateOf("Android") }
+    var expanded by remember { mutableStateOf(false) }
+    val domainPresets = mapOf(
 
-    val predefinedSkills = listOf("Kotlin", "Java", "Jetpack Compose", "Android SDK", "Firebase",
-        "Python", "JavaScript", "TypeScript", "React", "SQL", "Git", "C++", "HTML", "CSS", "Node.js", "Flutter", "C#"
+        "Android 📱" to listOf(
+            "Kotlin",
+            "Jetpack Compose",
+            "Android SDK",
+            "Coroutines",
+            "Dagger Hilt",
+            "Room DB",
+            "Retrofit",
+            "MVVM",
+            "Clean Architecture",
+            "Material 3"
+        ),
+        "Web 🌐" to listOf(
+            "HTML5",
+            "CSS3",
+            "JavaScript",
+            "TypeScript",
+            "React.js",
+            "Node.js",
+            "Next.js",
+            "Tailwind CSS",
+            "Vue.js",
+            "REST APIs"
+        ),
+        "Backend ⚙️" to listOf(
+            "Java",
+            "Python",
+            "Spring Boot",
+            "PostgreSQL",
+            "MongoDB",
+            "Docker",
+            "Kubernetes",
+            "AWS",
+            "Firebase",
+            "GraphQL"
+        ),
+        "AI & Data 🧠" to listOf(
+            "Python",
+            "R",
+            "SQL",
+            "TensorFlow",
+            "PyTorch",
+            "Pandas",
+            "NumPy",
+            "Scikit-Learn",
+            "Machine Learning"
+        ),
+        "UI/UX 🎨" to listOf(
+            "Figma",
+            "Adobe XD",
+            "Wireframing",
+            "Prototyping",
+            "User Research",
+            "Material Design",
+            "Design Systems"
+        ),
+        "Tools & DevOps 🛠️" to listOf(
+            "Git",
+            "GitHub Actions",
+            "CI/CD",
+            "JUnit",
+            "MockK",
+            "Linux",
+            "Docker",
+            "Postman",
+            "Nginx"
+        ),
+        "Soft Skills 💼" to listOf(
+            "Problem Solving",
+            "Agile/Scrum",
+            "Communication",
+            "Leadership",
+            "Team Collaboration",
+            "Time Management"
+        )
     )
-    val filteredSkills = predefinedSkills.filter {
-        it.contains(textInput, ignoreCase = true) &&
-                !skillsList.any { s ->
-                    s.skill.equals(it, ignoreCase = true)
-                }
+
+    val masterSkillsList = remember { domainPresets.values.flatten().distinct() }
+    var filteredSuggestions = masterSkillsList.filter {
+        it.contains(textInput, true) &&
+                !skillsList.any { s -> s.skill.equals(it, ignoreCase = true) }
     }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        Text(
+            "Custom Skill Input:",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        val showAddHint = textInput.isNotBlank() && filteredSuggestions.isEmpty()
+        AnimatedVisibility(
+            visible = textInput.isNotBlank() && filteredSuggestions.isEmpty(),
+            enter = expandVertically(),
+            exit = shrinkVertically()
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.End // 👈 Aligns box to the right above '+'
             ) {
-                ExposedDropdownMenuBox(
-                    expanded = expanded && filteredSkills.isNotEmpty() && textInput.isNotBlank(),
-                    onExpandedChange = {expanded = it},
-                    modifier = Modifier.weight(1f)
+                Surface(
+                    color = Color(0xFF2E7D32).copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(
+                        topStart = 12.dp,
+                        topEnd = 12.dp,
+                        bottomStart = 12.dp,
+                        bottomEnd = 2.dp //
+                    ),
+                    border = BorderStroke(1.dp, Color(0xFF2E7D32).copy(alpha = 0.4f)),
+                    modifier = Modifier.padding(bottom = 4.dp)
                 ) {
-                    OutlinedTextField(
-                        value = textInput,
-                        onValueChange = {
-                            textInput = it
-                            expanded = true
-                        },
-                        label = {Text("Add a skill (e.g. Python 🐍)") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded && filteredSkills.isNotEmpty()
-                                && textInput.isNotBlank(),
-                        onDismissRequest = {expanded = false},
-                        modifier = Modifier.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        filteredSkills.forEach {
-                            suggestion ->
-                            DropdownMenuItem(
-                                text = {Text(suggestion) },
-                                onClick = {
-                                    textInput = suggestion
-                                    expanded = false
-                                }
-                            )
-                        }
+
+                        Text(
+                            "💡 No matching skills found? Click '+' to add \"${textInput.trim()}\" as a custom skill!",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(start = 8.dp, top = 2.dp)
+                        )
                     }
-                }
 
-                IconButton(
-                    onClick = {
-                        if (textInput.isNotBlank()) {
-                            onAddSkill(textInput.trim())
-                            textInput = ""
-                            expanded = false
-                        }
-                    },
-                    modifier = Modifier
-                        .size(56.dp)
-                        .background(MaterialTheme.colorScheme.primary, CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Skill",
-                        tint = MaterialTheme.colorScheme.onPrimary
-
-                    )
+            }
             }
         }
-            if(skillsList.isNotEmpty() && skillsList.any {it.skill.isNotBlank()}) {
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    skillsList.forEachIndexed { index, skl ->
-                        if(skl.skill.isNotBlank()) {
-                            InputChip(
-                                selected =  false,
-                                onClick = {},
-                                label = {Text(skl.skill)},
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Remove Skill",
-                                        modifier = Modifier
-                                            .size(16.dp)
-                                            .clickable {onRemoveSkill(index)}
-                                    )
-                                }
-                            )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ExposedDropdownMenuBox(
+                expanded = expanded && filteredSuggestions.isNotEmpty() && textInput.isNotBlank(),
+                onExpandedChange = { expanded = it },
+                modifier = Modifier.weight(1f),
+
+            ) {
+                OutlinedTextField(
+                    value = textInput,
+                    onValueChange = {
+                        textInput = it
+                        expanded = true
+                    },
+                    singleLine = true,
+                    maxLines = 1,
+                    label = { Text("Search Skill") },
+                    placeholder = {Text("e.g., Solidity ⛓️, Ktor, Figma") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    shape = RoundedCornerShape(16.dp),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (textInput.isNotBlank()) {
+                                onAddSkill(textInput.trim())
+                                textInput = ""
+                                expanded = false
+                            }
                         }
+                    )
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded && filteredSuggestions.isNotEmpty() && textInput.isNotBlank(),
+                    onDismissRequest = { expanded = false },
+                    shape = RoundedCornerShape(20.dp),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
+                    modifier = Modifier
+                        .border(
+                            width = 1.5.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(20.dp)
+                        )
+                        .padding(vertical = 6.dp)
+
+                ) {
+                    filteredSuggestions.take(6).forEach { suggestion ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    suggestion,
+                                    fontWeight = FontWeight.SemiBold,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            },
+                            onClick = {
+                                onAddSkill(suggestion)
+                                textInput = ""
+                                expanded = false
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+
                     }
                 }
             }
-    }
+            IconButton(
+                onClick = {
+                    if (textInput.isNotBlank()) {
+                        onAddSkill(textInput.trim())
+                        textInput = ""
+                    }
+                },
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Custom Skill",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
 
+
+            }
+        // 2. Domain Filter Chips Row
+        Text(
+            "Or Choose Domain Presets:",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        FlowRow(
+//                modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            domainPresets.keys.forEach { domain ->
+                FilterChip(
+                    selected = selectedDomain == domain,
+                    onClick = { selectedDomain = domain },
+                    label = { Text(domain) }
+                )
+            }
+        }
+
+        val currentPresets = domainPresets[selectedDomain] ?: emptyList()
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            currentPresets.forEach { presetSkill ->
+                val isAlreadyAdded =
+                    skillsList.any { it.skill.equals(presetSkill, ignoreCase = true) }
+                FilterChip(
+                    selected = isAlreadyAdded,
+                    onClick = {
+                        if (!isAlreadyAdded) {
+                            onAddSkill(presetSkill)
+                        }
+                    },
+                    label = { Text(presetSkill) },
+                    leadingIcon = if (isAlreadyAdded) {
+                        {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    } else null
+                )
+            }
+        }
+
+        // Selected Skills Chip Tags
+        if (skillsList.isNotEmpty() && skillsList.any { it.skill.isNotBlank() }) {
+            Text(
+                "Selected Resume Skills (${skillsList.filter { it.skill.isNotBlank() }.size}):",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                skillsList.forEachIndexed { index, skl ->
+                    if (skl.skill.isNotBlank()) {
+                        InputChip(
+                            selected = false,
+                            onClick = {},
+                            label = { Text(skl.skill) },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Remove",
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clickable { onRemoveSkill(index) }
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -187,13 +417,13 @@ fun SkillScreen(
         focusedLabelColor = MaterialTheme.colorScheme.primary,
         cursorColor = MaterialTheme.colorScheme.primary
     )
-    var showLivePreview by remember {mutableStateOf(false)}
+    var showLivePreview by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             ResumeTopAppBar(
                 title = "Skill",
                 onBack = onPrev,
-                onPreviewClick = { showLivePreview = true}
+                onPreviewClick = { showLivePreview = true }
             )
         }
     ) { paddingValues ->
@@ -211,7 +441,7 @@ fun SkillScreen(
 
             // Loop through the list of qualifications
             item {
-                SmartSkillInputSection(
+                SmartDomainSkillPicker(
                     uiState.resume.skills,
                     onAddSkill = { newSkill ->
                         onAdd(newSkill)
@@ -268,7 +498,7 @@ fun SkillScreen(
             }
         }
 
-        if(showLivePreview) {
+        if (showLivePreview) {
             ModalBottomSheet(
                 onDismissRequest = {
                     showLivePreview = false
@@ -280,7 +510,7 @@ fun SkillScreen(
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Live Resume Preview",style = MaterialTheme.typography.titleLarge)
+                    Text("Live Resume Preview", style = MaterialTheme.typography.titleLarge)
                     Spacer(Modifier.height(16.dp))
 
                     ResumeCard(
@@ -327,7 +557,8 @@ fun SkillScreen(
 //        }
 //    }
 //}
-    }}
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

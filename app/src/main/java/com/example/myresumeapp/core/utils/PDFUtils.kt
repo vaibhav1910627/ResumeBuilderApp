@@ -1,5 +1,8 @@
 package com.example.myresumeapp.core.utils
 
+import android.R.attr.category
+import android.R.attr.text
+import android.R.attr.x
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -127,29 +130,42 @@ fun drawResumeContent(
     canvas.drawText("TECHNICAL SKILLS", 40f, y, headerPaint)
     y += 16f
 
-    val skillCategories = listOf(
-        "Languages" to resume.skills.map { it.skill },
-        "Mobile" to resume.skills2.map { it.skill2 },
-        "ML & Computer Vision" to resume.skills3.map { it.skill3 },
-        "IoT & Embedded" to listOf("Microcontroller board, IMU sensor, BLE, real-time systems"),
-        "Backend & Web" to listOf("Web framework, REST APIs, Database, webhooks"),
-        "Core CS" to listOf("Data Structures & Algorithms, OOP, Low-Latency Design"),
-        "Tools" to listOf("Git, GitHub, Linux"),
-        "Problem Solving" to listOf("300+ LeetCode problems solved across dynamic data structures")
-    )
+    val userSkills = resume.skills.map { it.skill }.filter { it.isNotBlank() }
+    val userSkills2 = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
+    val userSkills3 = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
+    val userLanguages = resume.language
+        .filter { it.language.isNotBlank() }
+        .map{if(it.proficiency.isNotBlank()) "${it.language} (${it.proficiency})" else it.language }
 
-    skillCategories.forEach { (category, skillsList) ->
-        val cleanSkills = skillsList.filter { it.isNotBlank() }.joinToString(", ")
-        if (cleanSkills.isNotEmpty()) {
+    val dynamicCategories = listOfNotNull(
+        if (userSkills.isNotEmpty()) "Technical Skills" to userSkills else null,
+        if (userSkills2.isNotEmpty()) "Frameworks & Libraries" to userSkills2 else null,
+        if (userSkills3.isNotEmpty()) "Tools & Platforms" to userSkills3 else null,
+        if (userLanguages.isNotEmpty()) "Languages" to userLanguages else null
+
+    )
+    if (dynamicCategories.isNotEmpty()) {
+        canvas.drawText("Skills & Languages", 40f, y, headerPaint)
+        y += 16f
+
+        dynamicCategories.forEach { (category, skillsList) ->
+            val cleanSkills = skillsList.joinToString(", ")
             canvas.drawText("$category: ", 40f, y, boldTextPaint)
             val prefixWidth = boldTextPaint.measureText("$category: ")
-            y = drawMultiLine(canvas, cleanSkills, 40f + prefixWidth, y, (pageWidth - 80 - prefixWidth).toInt(), textPaint)
+            y = drawMultiLine(
+                canvas,
+                text = cleanSkills,
+                40f + prefixWidth,
+                y,
+                (PAGE_WIDTH - 80 - prefixWidth).toInt(),
+                textPaint
+            )
         }
-    }
-    y += 4f
-    canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
-    y += 18f
 
+        y += 4f
+        canvas.drawLine(40f, y, (pageWidth - 40).toFloat(), y, divider)
+        y += 18f
+    }
     // -------- PROJECTS SECTION ----------
     if (resume.projects.any { it.projectName.isNotBlank() }) {
         canvas.drawText("PROJECTS", 40f, y, headerPaint)
