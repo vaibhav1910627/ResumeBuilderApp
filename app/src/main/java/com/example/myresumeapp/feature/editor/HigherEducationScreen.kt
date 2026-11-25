@@ -94,9 +94,7 @@ fun HigherEducationScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Text("Academic Qualification", style = MaterialTheme.typography.headlineMedium)
-            }
+
 
             // Loop through the list of qualifications
             itemsIndexed(uiState.resume.higherEducation) { index, qual ->

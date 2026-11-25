@@ -99,9 +99,6 @@ fun CertificateScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Text("Certificates", style = MaterialTheme.typography.headlineMedium)
-            }
 
             // Loop through the list of qualifications
             itemsIndexed(uiState.resume.certificate) { index, cert ->

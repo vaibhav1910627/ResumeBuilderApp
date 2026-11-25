@@ -437,9 +437,6 @@ fun SkillScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Text("Skills", style = MaterialTheme.typography.headlineMedium)
-            }
 
             // Loop through the list of qualifications
             item {

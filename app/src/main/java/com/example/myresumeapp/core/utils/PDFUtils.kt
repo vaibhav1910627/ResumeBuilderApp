@@ -146,9 +146,6 @@ fun drawResumeContent(
 
 
     // -------- TECHNICAL SKILLS SECTION ----------
-    canvas.drawText("TECHNICAL SKILLS", 40f, y, headerPaint)
-    y += 16f
-
     val techSkills = resume.skills.map { it.skill }.filter { it.isNotBlank() }
     val frameworks = resume.skills2.map { it.skill2 }.filter { it.isNotBlank() }
     val tools = resume.skills3.map { it.skill3 }.filter { it.isNotBlank() }
@@ -165,7 +162,7 @@ fun drawResumeContent(
         if (techSkills.isNotEmpty()) {
             canvas.drawText("Languages & Core: ", 40f, y, boldTextPaint)
             val prefixW = boldTextPaint.measureText("Languages & Core: ")
-            y = drawMultiLine(canvas, techSkills.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
+            y = dragiwMultiLine(canvas, techSkills.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
         }
 
         if (frameworks.isNotEmpty()) {
