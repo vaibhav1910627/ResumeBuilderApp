@@ -1,20 +1,25 @@
 # 📄 Resume Builder Android App
 
-A modern, native Android application built with **Kotlin**, **Jetpack Compose**, and **Dagger Hilt** featuring a robust **Offline-First Architecture (Room Database + WorkManager)**, **Home Screen Glance Widget**, **Unit Testing (JUnit4 + MockK)**, and an automated **CI/CD Pipeline (GitHub Actions)**. Allows users to create, preview, and export professional resumes as formatted PDFs, with automatic background synchronization to **Firebase**.
+A modern, native Android application built with **Kotlin**, **Jetpack Compose**, and **Dagger Hilt** featuring an **ATS Resume Completeness Engine**, **Spring-Physics Step Bar**, **Auth Theme**, **3D Hedgehog Mascot**, **Offline-First Architecture (Room Database + WorkManager)**, **Home Screen Glance Widget**, **Unit Testing (JUnit4 + MockK)**, and an automated **CI/CD Pipeline (GitHub Actions)**. Allows users to create, preview, and export professional resumes as formatted PDFs, with automatic background synchronization to **Firebase**.
 
 ---
 
 ## 🚀 Features
 
+- **Real-Time ATS Score & Completeness Analyzer**: Evaluates 6 core resume sections (0–100%), grades completeness (*Excellent, Good, Needs Improvement*), and provides an interactive bottom sheet with mascot stickers and 1-tap "Fix" buttons that jump directly to incomplete fields.
+- **Spring-Physics Progress Bar**: Interactive horizontal bar with drag gestures (`pointerInput`), 12 step dots, and bouncy spring snap physics (`Spring.DampingRatioMediumBouncy`) that snaps to step marks and switches editor screens dynamically.
+- **Auth UI & 3D Hedgehog Mascot**: Custom Canvas square grid background with glowing color cells, show/hide password eye toggles, and an animated 3D Hedgehog Mascot (`HedgehogMascot.kt`).
+- **Domain-Based Categorized Skill Picker**: 10+ domain presets (*Android, iOS, Web, Backend, AI/ML, Game Dev, Cybersecurity, UI/UX, Tools, Soft Skills*) with live glassmorphic autocomplete dropdown search.
+- **Offline JSON Backup & Restore**: Export complete resume data to `.json` backup files or restore from existing JSON backups using Android's System File Picker.
+- **1-Tap Sample Resume Autofill**: Pre-populates realistic multi-project and certification sample data across all 12 editor sections for instant testing.
 - **Offline-First Capabilities**: Instantly saves resume data locally using Room Database so it persists even when offline or when the app is closed.
 - **Background Cloud Sync**: Automatically syncs local changes to Firebase Realtime Database and Cloud Storage in the background using Android's WorkManager when a network connection is available.
 - **Home Screen Glance Widget**: Interactive Jetpack Glance AppWidget displaying resume summary and providing quick-launch access directly from the home screen.
 - **Automated Testing & CI/CD**: Fully tested repository layer with JUnit4 & MockK, backed by a GitHub Actions CI/CD pipeline that runs tests and builds on every push.
 - **Intuitive UI**: Built entirely with Jetpack Compose and Material 3 guidelines, complete with a slide-out Navigation Drawer connecting all screens.
 - **Smart Form UX**: Soft keyboard `Next`/`Done` focus navigation and auto-card generation.
-- **Advanced Input Components**: Autocomplete Skill Picker with interactive chip tags (`FlowRow`).
 - **Comprehensive Sections**: Personal details, Career Objective, Education with year validations, Work Experience, Projects, Certifications with "No Expiry" toggles, Languages with proficiency levels, and Achievements.
-- **Native PDF Export**: Generates professionally styled PDF documents using Android's native `PdfDocument` and Canvas API.
+- **Native PDF Export**: Generates professionally styled, paper-aligned PDF documents using Android's native `PdfDocument` and Canvas API.
 
 ---
 
@@ -25,6 +30,7 @@ A modern, native Android application built with **Kotlin**, **Jetpack Compose**,
 - **Widgets**: [Jetpack Glance](https://developer.android.com/jetpack/compose/glance) (`androidx.glance:glance-appwidget`)
 - **Dependency Injection**: [Dagger Hilt](https://dagger.dev/hilt/) & KSP
 - **Local Database**: [Room Database](https://developer.android.com/training/data-storage/room) & Gson
+- **Backup & Serialization**: [Gson](https://github.com/google/gson) (`JsonBackupUtils` for JSON document export & import)
 - **Background Processing**: [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
 - **Unit Testing**: [JUnit4](https://junit.org/junit4/) & [MockK](https://mockk.io/)
 - **CI/CD Pipeline**: [GitHub Actions](https://github.com/features/actions)
@@ -41,20 +47,25 @@ A modern, native Android application built with **Kotlin**, **Jetpack Compose**,
 
 ```text
 com.example.myresumeapp/
+├── components/                 # Global UI components
+│   ├── AtsScoreBottomSheet.kt  # ATS score completeness bottom sheet
+│   ├── HedgehogMascot.kt       # 3D animated hedgehog mascot
+│   ├── ResumeCard.kt           # Paper-style resume document preview
+│   └── ResumeTopAppBar.kt      # TopBar with ATS chip & SpringStepBar
 ├── core/                       # Shared utilities, theme, and DI modules
 │   ├── di/                     # Hilt Modules (AppModule)
 │   ├── theme/                  # Material 3 Color, Theme, and Typography
-│   └── utils/                  # PDFUtils, ImageUtils, BitmapExtensions
+│   └── utils/                  # AtsScoreAnalyzer, JsonBackupUtils, PDFUtils, ImageUtils
 ├── data/                       # Data layer
 │   ├── local/                  # Room Database, Entity, DAO, and TypeConverters
 │   ├── model/                  # Data classes (ResumeData, UiState, Certificates, etc.)
 │   ├── repository/             # Offline-First ResumeRepository
 │   └── worker/                 # SyncResumeWorker (WorkManager background sync)
 ├── feature/                    # Feature-based presentation layer
-│   ├── auth/                   # Login & Signup screens
+│   ├── auth/                   # Login & Signup screens with SquareGridBackground
 │   ├── editor/                 # Personal, Education, Skills, Experience, etc.
 │   ├── preview/                # PreviewScreen & PDF/Image export
-│   └── viewmodel/              # ResumeViewModel (HiltViewModel)
+│   └── viewmodel/              # ResumeViewModel (HiltViewModel & Autofill)
 ├── navigation/                 # Navigation graph and routes (NavRoutes.kt)
 ├── widget/                     # Jetpack Glance Home Screen AppWidget & Receiver
 ├── MainActivity.kt             # Entry activity

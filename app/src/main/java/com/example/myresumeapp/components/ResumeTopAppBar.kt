@@ -55,7 +55,7 @@ val LocalStepProgress = compositionLocalOf<Float?> { null }
 val LocalOnStepSelected = compositionLocalOf<((Int) -> Unit)?> { null }
 val LocalCurrentStepIndex = compositionLocalOf<Int?> { null }
 
-val FlourescentGreen = Color(0xFF00E604)
+val FlourescentGreen = Color(0xFF2B3A55)
 
 @Composable
 fun StepProgressLine(
