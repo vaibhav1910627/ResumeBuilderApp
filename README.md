@@ -4,6 +4,28 @@ A modern, native Android application built with **Kotlin**, **Jetpack Compose**,
 
 ---
 
+## 🎬 App Walkthrough & Demo
+
+![App Demo](assets/rezumedemo.gif)
+
+---
+
+## 📸 App Screenshots
+
+| **Login & Auth Screen** | **Navigation Drawer & Profiles** |
+| :---: | :---: |
+| ![Login Screen](assets/login_screen.jpg) | ![Navigation Drawer](assets/navigation_drawer.jpg) |
+
+| **ATS Score Bottom Sheet** | **Domain Skill Picker** |
+| :---: | :---: |
+| ![Bottom Sheet](assets/bottom_sheet.jpg) | ![Skill Screen](assets/skillscreen.jpg) |
+
+| **Live Resume Preview** | **Exported PDF Output** |
+| :---: | :---: |
+| ![Preview Screen](assets/preview_screen.jpg) | ![Exported PDF](assets/exported_pdf.jpg) |
+
+---
+
 ## 🚀 Features
 
 - **Multiple Resume Profiles (Draft Manager)**: Create, manage, rename, and switch between multiple resume profiles seamlessly from the navigation drawer with Room Database persistence.
@@ -61,7 +83,7 @@ com.example.myresumeapp/
 │   ├── theme/                  # Material 3 Color, Theme, and Typography
 │   └── utils/                  # AtsScoreAnalyzer, JsonBackupUtils, PDFUtils, ImageUtils
 ├── data/                       # Data layer
-│   ├── local/                  # Room Database v2, Entity, DAO, and TypeConverters
+│   ├── local/                  # Room Database, Entity, DAO, and TypeConverters
 │   ├── model/                  # Data classes (ResumeData, UiState, Certificates, etc.)
 │   ├── repository/             # Offline-First ResumeRepository
 │   └── worker/                 # SyncResumeWorker (WorkManager background sync)
@@ -69,10 +91,10 @@ com.example.myresumeapp/
 │   ├── auth/                   # Login & Signup screens with SquareGridBackground
 │   ├── editor/                 # Personal, Education, Skills, Experience, etc.
 │   ├── preview/                # PreviewScreen & PDF/Image export
-│   └── viewmodel/              # ResumeViewModel (HiltViewModel & Profile Manager)
+│   └── viewmodel/              # ResumeViewModel (HiltViewModel & Autofill)
 ├── navigation/                 # Navigation graph and routes (NavRoutes.kt)
 ├── widget/                     # Jetpack Glance Home Screen AppWidget & Receiver
-├── MainActivity.kt             # Entry activity (`enableEdgeToEdge()`)
+├── MainActivity.kt             # Entry activity
 └── MyResumeAppApplication.kt   # Hilt application container (@HiltAndroidApp)
 ```
 

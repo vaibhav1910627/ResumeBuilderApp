@@ -162,7 +162,7 @@ fun drawResumeContent(
         if (techSkills.isNotEmpty()) {
             canvas.drawText("Languages & Core: ", 40f, y, boldTextPaint)
             val prefixW = boldTextPaint.measureText("Languages & Core: ")
-            y = dragiwMultiLine(canvas, techSkills.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
+            y = drawMultiLine(canvas, techSkills.joinToString(", "), 40f + prefixW, y, (PAGE_WIDTH - 80 - prefixW.toInt()), textPaint)
         }
 
         if (frameworks.isNotEmpty()) {
