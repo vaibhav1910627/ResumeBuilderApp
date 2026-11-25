@@ -1,5 +1,6 @@
 package com.example.myresumeapp.navigation
 
+import android.R.attr.id
 import android.R.attr.onClick
 import androidx.activity.compose.LocalActivityResultRegistryOwner.provides
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Analytics
 
 import androidx.compose.material.icons.filled.Build
@@ -237,7 +241,49 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                 )
 
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(8.dp))
 
+            Text("Resume Profiles",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
+            resumeViewModel.profilesList.value.forEach { (id, title) ->
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    label = { Text(title, maxLines = 1) },
+                    selected = resumeViewModel.uiState.resume.id == id,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        resumeViewModel.switchProfile(id)
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+
+            TextButton(
+                onClick = {
+                    scope.launch { drawerState.close() }
+                    resumeViewModel.createNewProfile("New Resume Profile") {
+                        navController.navigate(Routes.PERSONAL) {
+                            popUpTo(Routes.PERSONAL) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Create New Profile", fontWeight = FontWeight.Bold)
+            }
 
         }
     }

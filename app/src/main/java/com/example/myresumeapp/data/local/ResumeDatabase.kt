@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 
-@Database(entities = [ResumeEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ResumeEntity::class], version = 2, exportSchema = false)
 @TypeConverters(ResumeTypeConverters::class)
 abstract class ResumeDatabase: RoomDatabase() {
     abstract fun resumeDao(): ResumeDao

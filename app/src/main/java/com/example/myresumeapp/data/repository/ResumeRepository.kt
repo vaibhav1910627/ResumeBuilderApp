@@ -61,6 +61,29 @@ class ResumeRepository @Inject constructor(
         workManager.enqueue(syncRequest)
     }
 
+    suspend fun getAllProfiles(): List<Pair<String, ResumeData>> {
+        return resumeDao.getAllProfiles().map {entity ->
+            val data = Gson().fromJson(entity.resumeJson, ResumeData::class.java)
+            entity.id to data
+        }
+    }
+
+    suspend fun getProfileById(id: String): ResumeEntity? {
+        return resumeDao.getProfileById(id)
+    }
+
+    suspend fun createNewProfile(title: String): ResumeData {
+        val newId = UUID.randomUUID().toString()
+        val newResume = ResumeData(id = newId, personal = com.example.myresumeapp.data.model.PersonalDetails(name = title))
+        val entity = ResumeEntity(id = newId, profileTitle = title, resumeJson = Gson().toJson(newResume))
+        resumeDao.insertResume(entity)
+        return newResume
+    }
+
+    suspend fun deleteProfile(id: String) {
+        resumeDao.deleteProfile(id)
+    }
+
     suspend fun createOrUpdate(resume: ResumeData, localPhotoBitmap: Bitmap?): ResumeData {
         val id = resume.id.ifEmpty {
             firebaseDatabase.child("users/$userID/resumes").push().key ?: UUID.randomUUID().toString()

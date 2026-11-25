@@ -1,17 +1,18 @@
 package com.example.myresumeapp.data.model
 
 import android.net.Uri
+import java.io.Serializable
 
 
 data class Signup(
         val email: String = "",
         val password: String = ""
-        )
+        ) : Serializable
 
 data class Login(
     val email: String = "",
     val password: String = ""
-)
+): Serializable
 data class PersonalDetails(
     val name: String = "",
     val email: String = "",
@@ -22,11 +23,11 @@ data class PersonalDetails(
     val photoUrl: String = "",
     val githublink: String = "",
     val linkedinlink: String = ""
-)
+): Serializable
 
 data class CareerObjective(
     val careerDescription: String = ""
-)
+): Serializable
 data class HigherEducation(
     val degree: String = "",
     val institution: String = "",
@@ -34,23 +35,23 @@ data class HigherEducation(
     val endYear: String = "",
     val CGPA: String =  "",
 
-)
+) : Serializable
 
 data class Language(
     val language: String = "",
     val proficiency: String = ""
-)
+) : Serializable
 
 data class Skills(
     val skill: String = ""
-)
+): Serializable
 
 data class Skills2(
     val skill2: String = ""
-)
+) : Serializable
 data class Skills3(
     val skill3: String = ""
-)
+): Serializable
 
 data class Experience(
     val company: String = "",
@@ -58,17 +59,17 @@ data class Experience(
     val startMonthYear: String = "",
     val endMonthYear: String = "",
     val responsibilities: String = "",
-)
+): Serializable
 
 data class Achievements(
     val achievements: String = "",
     val description: String = ""
-)
+): Serializable
 data class Project(
     val projectName: String = "",
     val technology: String = "",
     val description: String = ""
-)
+): Serializable
 
 data class School10Education(
     val school10: String = "",
@@ -76,7 +77,7 @@ data class School10Education(
     val startYear10: String = "",
     val endYear10: String = "",
     val percentage10: String =  ""
-)
+): Serializable
 
 
 data class Certificates(
@@ -84,14 +85,14 @@ data class Certificates(
     val startMonthYear: String= "",
     val endMonthYear: String = "",
     val topic: String = ""
-)
+): Serializable
 data class School12Education(
     val school12: String = "",
     val board12: String = "",
     val startYear12: String = "",
     val endYear12: String = "",
     val percentage12: String =  ""
-)
+): Serializable
 
 
 
@@ -112,7 +113,7 @@ data class ResumeData(
     val projects: List<Project> = listOf(Project()),
     val certificate: List<Certificates> = listOf(Certificates()),
     val achievements: List<Achievements> = listOf(Achievements())
-)
+): Serializable
 
 
 data class UiState(

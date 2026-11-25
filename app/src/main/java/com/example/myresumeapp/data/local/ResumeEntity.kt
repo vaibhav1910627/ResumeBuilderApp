@@ -10,6 +10,7 @@ import com.google.gson.Gson
 data class ResumeEntity(
     @PrimaryKey
     val id: String,
+    val profileTitle: String = "My Resume",
     val resumeJson: String,
     val isSynced: Boolean = false,
     val lastUpdated: Long = System.currentTimeMillis()

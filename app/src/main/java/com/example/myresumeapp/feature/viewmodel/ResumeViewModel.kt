@@ -12,6 +12,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.myresumeapp.data.model.Achievements
 import com.example.myresumeapp.data.model.Certificates
@@ -27,6 +28,7 @@ import com.example.myresumeapp.core.utils.toSoftwareBitmap
 import com.example.myresumeapp.data.model.CareerObjective
 import com.example.myresumeapp.data.model.PersonalDetails
 import com.example.myresumeapp.data.model.ResumeData
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,11 +38,22 @@ import javax.inject.Inject
 @HiltViewModel
 class ResumeViewModel @Inject constructor (
     application: Application,
-    private val resumeRepository: ResumeRepository
+    private val resumeRepository: ResumeRepository,
+    private val savedStateHandle: SavedStateHandle
 ): AndroidViewModel(application) {
     //    private val resumeRepository = ResumeRepository()
-    private val internalUiState = mutableStateOf(UiState())
+
+    companion object {
+        private const val RESUME_STATE_KEY = "resume_data_state"
+    }
+    private val internalUiState = mutableStateOf(UiState(resume = savedStateHandle.get<ResumeData>(RESUME_STATE_KEY) ?: ResumeData()))
     val uiState: UiState get() = internalUiState.value
+
+    private fun updateResumeState(newResume: ResumeData) {
+        internalUiState.value = internalUiState.value.copy(resume = newResume)
+        savedStateHandle[RESUME_STATE_KEY] = newResume
+
+    }
 
     val atsScoreResult: com.example.myresumeapp.core.utils.AtsScoreResult
         get() = com.example.myresumeapp.core.utils.AtsScoreAnalyser.analyze(uiState.resume)
@@ -676,6 +689,45 @@ class ResumeViewModel @Inject constructor (
         )
     }
 
+    val profilesList = mutableStateOf<List<Pair<String, String>>>(emptyList())
+
+    init {
+        loadProfiles()
+    }
+
+    fun loadProfiles() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val profiles = resumeRepository.getAllProfiles()
+            withContext(Dispatchers.Main) {
+                profilesList.value = profiles.map { it.first to (it.second.personal.name.ifBlank { "Untitled Resume" }) }
+            }
+        }
+    }
+
+    fun createNewProfile(title: String, onCreated: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newResume = resumeRepository.createNewProfile(title)
+            withContext(Dispatchers.Main) {
+                internalUiState.value = internalUiState.value.copy(resume = newResume)
+                loadProfiles()
+                onCreated()
+            }
+        }
+    }
+
+    fun switchProfile(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val entity = resumeRepository.getProfileById(id)
+            if (entity != null) {
+                val resumeData = Gson().fromJson(entity.resumeJson, ResumeData::class.java)
+                withContext(Dispatchers.Main) {
+                    internalUiState.value = internalUiState.value.copy(resume = resumeData)
+                }
+            }
+
+            loadProfiles()
+        }
+    }
     fun autofillSampleData() {
         val sampleResume = ResumeData(
             id = "sample_resume",
