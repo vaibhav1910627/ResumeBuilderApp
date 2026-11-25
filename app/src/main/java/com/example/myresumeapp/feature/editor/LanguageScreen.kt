@@ -43,6 +43,7 @@ import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
 import com.example.myresumeapp.core.theme.MyResumeAppTheme
@@ -87,7 +88,8 @@ fun LanguageScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .imePadding(),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

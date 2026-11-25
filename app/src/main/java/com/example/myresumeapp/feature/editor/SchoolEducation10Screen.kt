@@ -41,6 +41,7 @@ import com.example.myresumeapp.components.ResumeCard
 import com.example.myresumeapp.components.ResumeTopAppBar
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.text.input.KeyboardType
 //import androidx.wear.compose.foundation.weight
 import com.example.myresumeapp.data.model.UiState
@@ -91,7 +92,8 @@ fun SchoolEducation10Screen(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .imePadding(),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
