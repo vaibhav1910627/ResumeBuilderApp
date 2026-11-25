@@ -1,10 +1,10 @@
-# 📄 Resume Builder Android App
+#  Resume Builder Android App
 
 A modern, native Android application built with **Kotlin**, **Jetpack Compose**, and **Dagger Hilt** featuring an **ATS Resume Completeness Engine**, **Spring-Physics Step Bar**, **Auth Theme**, **3D Hedgehog Mascot**, **Offline-First Architecture (Room Database + WorkManager)**, **Home Screen Glance Widget**, **Unit Testing (JUnit4 + MockK)**, and an automated **CI/CD Pipeline (GitHub Actions)**. Allows users to create, preview, and export professional resumes as formatted PDFs, with automatic background synchronization to **Firebase**.
 
 ---
 
-## 🚀 Features
+##  Features
 
 - **Real-Time ATS Score & Completeness Analyzer**: Evaluates 6 core resume sections (0–100%), grades completeness (*Excellent, Good, Needs Improvement*), and provides an interactive bottom sheet with mascot stickers and 1-tap "Fix" buttons that jump directly to incomplete fields.
 - **Spring-Physics Progress Bar**: Interactive horizontal bar with drag gestures (`pointerInput`), 12 step dots, and bouncy spring snap physics (`Spring.DampingRatioMediumBouncy`) that snaps to step marks and switches editor screens dynamically.
@@ -12,6 +12,8 @@ A modern, native Android application built with **Kotlin**, **Jetpack Compose**,
 - **Domain-Based Categorized Skill Picker**: 10+ domain presets (*Android, iOS, Web, Backend, AI/ML, Game Dev, Cybersecurity, UI/UX, Tools, Soft Skills*) with live glassmorphic autocomplete dropdown search.
 - **Offline JSON Backup & Restore**: Export complete resume data to `.json` backup files or restore from existing JSON backups using Android's System File Picker.
 - **1-Tap Sample Resume Autofill**: Pre-populates realistic multi-project and certification sample data across all 12 editor sections for instant testing.
+- **Jetpack Compose UI Testing**: Comprehensive instrumented component test suite (`ResumeComponentsUiTest.kt`) verifying UI rendering for `ResumeCard`, `AtsScoreBottomSheet`, and `ResumeTopAppBar`.
+- **Android 15 Edge-to-Edge Insets**: Full edge-to-edge system window integration with dynamic `.imePadding()` on all form screens for smooth soft keyboard adjustments.
 - **Offline-First Capabilities**: Instantly saves resume data locally using Room Database so it persists even when offline or when the app is closed.
 - **Background Cloud Sync**: Automatically syncs local changes to Firebase Realtime Database and Cloud Storage in the background using Android's WorkManager when a network connection is available.
 - **Home Screen Glance Widget**: Interactive Jetpack Glance AppWidget displaying resume summary and providing quick-launch access directly from the home screen.
