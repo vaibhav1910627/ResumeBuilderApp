@@ -240,7 +240,7 @@ class ResumeViewModel @Inject constructor (
 
     fun removeHigherEducation(index: Int) {
         val currentQualifications = internalUiState.value.resume.higherEducation.toMutableList()
-        if (currentQualifications.size > 1) { // Keep at least one qualification
+        if (currentQualifications.size > 1 && index in 0 until currentQualifications.size) { // Keep at least one qualification
             currentQualifications.removeAt(index)
 
             internalUiState.value = internalUiState.value.copy(
@@ -338,7 +338,7 @@ class ResumeViewModel @Inject constructor (
 
     fun removeExperience(index: Int) {
         val currentExperience = internalUiState.value.resume.experience.toMutableList()
-        if (currentExperience.size > 1) { // Keep at least one qualification
+        if (currentExperience.size > 1 && index in 0 until currentExperience.size) { // Keep at least one qualification
             currentExperience.removeAt(index)
 
             internalUiState.value = internalUiState.value.copy(
@@ -481,7 +481,7 @@ class ResumeViewModel @Inject constructor (
 
     fun removeSkill(index: Int) {
         val currentSkill = internalUiState.value.resume.skills.toMutableList()
-        if (currentSkill.size > 1) { // Keep at least one qualification
+        if (currentSkill.size > 1 && index in 0 until currentSkill.size) { // Keep at least one qualification
             currentSkill.removeAt(index)
 
             internalUiState.value = internalUiState.value.copy(
@@ -566,7 +566,7 @@ class ResumeViewModel @Inject constructor (
 
     fun removeProject(index: Int) {
         val currentProject = internalUiState.value.resume.projects.toMutableList()
-        if (currentProject.size > 1) { // Keep at least one qualification
+        if (currentProject.size > 1 && index in 0 until currentProject.size) { // Keep at least one qualification
             currentProject.removeAt(index)
 
             internalUiState.value = internalUiState.value.copy(
@@ -611,7 +611,7 @@ class ResumeViewModel @Inject constructor (
 
     fun removeCertificate(index: Int) {
         val currentCertificate = internalUiState.value.resume.certificate.toMutableList()
-        if (currentCertificate.size > 1) { // Keep at least one qualification
+        if (currentCertificate.size > 1 && index in 0 until currentCertificate.size) { // Keep at least one qualification
             currentCertificate.removeAt(index)
 
             internalUiState.value = internalUiState.value.copy(
@@ -659,7 +659,7 @@ class ResumeViewModel @Inject constructor (
 
     fun removeAchievement(index: Int) {
         val currentAchievement = internalUiState.value.resume.achievements.toMutableList()
-        if (currentAchievement.size > 1) { // Keep at least one qualification
+        if (currentAchievement.size > 1 && index in 0 until currentAchievement.size) { // Keep at least one qualification
             currentAchievement.removeAt(index)
 
             internalUiState.value = internalUiState.value.copy(
