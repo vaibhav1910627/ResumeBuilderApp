@@ -9,6 +9,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -116,13 +118,15 @@ fun SpringStepVolumeBar(
 
     val targetFraction = currentStep.toFloat() / (totalSteps - 1).coerceAtLeast(1)
     val animatableFraction = remember { Animatable(targetFraction) }
+    var isDragging by remember { mutableStateOf((false)) }
 
     LaunchedEffect(currentStep) {
+        if(!isDragging)
         animatableFraction.animateTo(
             targetValue = targetFraction,
             animationSpec = spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessLow
+                dampingRatio = Spring.DampingRatioLowBouncy,
+                stiffness = Spring.StiffnessMedium
             )
         )
     }
@@ -170,19 +174,30 @@ fun SpringStepVolumeBar(
             }
         }
         //vetical stopper thumb
-        val thumbX = (this@BoxWithConstraints.maxWidth * animatableFraction.value) - 6.dp
+//        val thumbX = (this@BoxWithConstraints.maxWidth * animatableFraction.value) - 6.dp
+        val thumbWidth = 40.dp
+        val dotSize = 7.dp
+        val thumbX = (this@BoxWithConstraints.maxWidth * animatableFraction.value) - (thumbWidth/2) + (dotSize/2)
 
         Box(
             modifier = Modifier
                 .offset(x = thumbX.coerceAtLeast(0.dp))
-                .width(14.dp)
+                .graphicsLayer {
+                    scaleX = if(isDragging) 1.06f else 1f
+                    scaleY = if(isDragging) 1.06f else 1f
+
+                }
+                .width(thumbWidth)
                 .height(80.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .background(Color.White)
-                .shadow(2.dp)
+                .border(1.dp, Color.Black.copy(alpha = 0.12f), RoundedCornerShape(6.dp))
+                .shadow(if (isDragging) 6.dp else 2.dp)
                 .pointerInput(totalSteps, currentStep) {
                     detectHorizontalDragGestures(
+                        onDragStart = {isDragging = true},
                         onDragEnd = {
+                            isDragging = false
                             val currentPx = animatableFraction.value * totalWidthPx
 
                             val nearestStep = (currentPx/stepWidthPx).roundToInt().coerceIn(0, totalSteps - 1)
@@ -192,8 +207,8 @@ fun SpringStepVolumeBar(
                                 animatableFraction.animateTo(
                                     targetValue = snapFraction,
                                     animationSpec = spring(
-                                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                                        stiffness = Spring.StiffnessLow
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessMedium
                                     )
                                 )
                                 if (nearestStep != currentStep) {
@@ -201,6 +216,7 @@ fun SpringStepVolumeBar(
                                 }
                             }
                         },
+                        onDragCancel = {isDragging = false},
                         onHorizontalDrag = { _, dragAmount ->
                             scope.launch {
                                 val deltaFraction = dragAmount/totalWidthPx
