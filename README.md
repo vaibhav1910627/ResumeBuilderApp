@@ -110,7 +110,7 @@ com.example.myresumeapp/
 ### Installation & Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/MyResumeApp.git
+   git clone https://github.com/vaibhav1910627/ResumeBuilderApp.git
    ```
 2. Open the project in Android Studio.
 3. Add your `google-services.json` file inside the `app/` directory (required for Firebase integration).
