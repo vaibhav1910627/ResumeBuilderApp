@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -298,8 +299,10 @@ fun SmartDomainSkillPicker(
                     }
                 },
                 modifier = Modifier
-                    .size(56.dp)
-                    .background(MaterialTheme.colorScheme.primary, CircleShape)
+                    .padding(top = 8.dp)
+                    .width(56.dp)
+                    .height(56.dp)
+                    .background(MaterialTheme.colorScheme.inversePrimary, RoundedCornerShape(16.dp)),
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -483,11 +486,16 @@ fun SkillScreen(
 //                        }
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .height(64.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Button(
                         onClick = onNext,
+                        modifier = Modifier
+//                            .width(56.dp)
+                            .height(64.dp),
                         colors = ButtonDefaults.buttonColors(contentColor = Color.Gray)
                     ) {
                         Text("Next", color = Color.White)
